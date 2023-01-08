@@ -29,6 +29,7 @@ Requirements:
 - GCC (will add support for other compilers in the future)
 
 ```
+mkdir build
 cd build
 cmake ..
 cmake --build ..
