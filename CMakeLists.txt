@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Radiance)
+project(Raydiance)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,4 +11,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-add_executable(radiance src/main.cpp)
+add_executable(raydiance src/main.cpp)

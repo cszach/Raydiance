@@ -1,7 +1,7 @@
-Radiance
+Raydiance
 ========
 
-[blog]: https://cszach.github.io/Radiance/
+[blog]: https://cszach.github.io/Raydiance/
 
 This is hopefully will be my long-term ray tracing software project. I will keep
 adding features to the ray tracer as I learn and discover ray tracing
