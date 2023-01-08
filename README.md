@@ -29,10 +29,8 @@ Requirements:
 - GCC (will add support for other compilers in the future)
 
 ```
-mkdir build
-cd build
-cmake ..
-cmake --build ..
+cmake -B build .
+cmake --build build
 ```
 
 The binary will be in the `bin` folder.
