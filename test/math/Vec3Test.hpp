@@ -33,38 +33,38 @@ TEST_F(Vec3Test, BasicOperators) {
   EXPECT_EQ(v.lengthSquared(), 50);
   EXPECT_EQ(v.length(), sqrt(50));
 
-  EXPECT_TRUE(u == Vec3(0, 1, 2));
-  EXPECT_TRUE(u != v);
+  EXPECT_TRUE(u.equals(Vec3(0, 1, 2)));
+  EXPECT_FALSE(u.equals(v));
 
-  EXPECT_EQ(-u, Vec3(0, -1, -2));
-  EXPECT_EQ(-v, Vec3(-3, -4, -5));
+  EXPECT_TRUE((-u).equals(Vec3(0, -1, -2)));
+  EXPECT_TRUE((-v).equals(Vec3(-3, -4, -5)));
 
-  EXPECT_EQ(u += v, Vec3(3, 5, 7));
-  EXPECT_EQ(u -= v, Vec3(0, 1, 2));
-  EXPECT_EQ(u *= v, Vec3(0, 4, 10));
-  EXPECT_EQ(u /= 1, Vec3(0, 4, 10));
-  EXPECT_EQ(u /= 2, Vec3(0, 2, 5));
+  EXPECT_TRUE((u += v).equals(Vec3(3, 5, 7)));
+  EXPECT_TRUE((u -= v).equals(Vec3(0, 1, 2)));
+  EXPECT_TRUE((u *= v).equals(Vec3(0, 4, 10)));
+  EXPECT_TRUE((u /= 1).equals(Vec3(0, 4, 10)));
+  EXPECT_TRUE((u /= 2).equals(Vec3(0, 2, 5)));
 
   // mutability: the above operations mutate u
 
-  EXPECT_EQ(u, Vec3(0, 2, 5));
-  EXPECT_EQ(v, Vec3(3, 4, 5));
+  EXPECT_TRUE(u.equals(Vec3(0, 2, 5)));
+  EXPECT_TRUE(v.equals(Vec3(3, 4, 5)));
 }
 
 TEST_F(Vec3Test, Utilities) {
-  EXPECT_EQ(u + v, Vec3(3, 5, 7));
-  EXPECT_EQ(u - v, Vec3(-3, -3, -3));
-  EXPECT_EQ(u * v, Vec3(0, 4, 10));
-  EXPECT_EQ(u / 1.0, Vec3(0, 1, 2));
-  EXPECT_EQ(u / 2.0, Vec3(0, 0.5, 1));
+  EXPECT_TRUE((u + v).equals(Vec3(3, 5, 7)));
+  EXPECT_TRUE((u - v).equals(Vec3(-3, -3, -3)));
+  EXPECT_TRUE((u * v).equals(Vec3(0, 4, 10)));
+  EXPECT_TRUE((u / 1).equals(Vec3(0, 1, 2)));
+  EXPECT_TRUE((u / 2).equals(Vec3(0, 0.5, 1)));
 
   EXPECT_EQ(dotProduct(u, v), 14);
-  EXPECT_EQ(crossProduct(u, v), Vec3(-3, 6, -3));
+  EXPECT_TRUE(crossProduct(u, v).equals(Vec3(-3, 6, -3)));
 
-  EXPECT_EQ(unitVectorFrom(u), Vec3(0, 1, 2) / sqrt(5));
+  EXPECT_TRUE(unitVectorFrom(u).equals(Vec3(0, 1, 2) / sqrt(5)));
 
   // immutability
 
-  EXPECT_EQ(u, Vec3(0, 1, 2));
-  EXPECT_EQ(v, Vec3(3, 4, 5));
+  EXPECT_TRUE(u.equals(Vec3(0, 1, 2)));
+  EXPECT_TRUE(v.equals(Vec3(3, 4, 5)));
 }

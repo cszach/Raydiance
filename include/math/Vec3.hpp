@@ -27,11 +27,9 @@ public:
     return this->x * this->x + this->y * this->y + this->z * this->z;
   }
 
-  bool operator==(const Vec3 &v) const {
+  bool equals(const Vec3 &v) const {
     return this->x == v.getX() && this->y == v.getY() && this->z == v.getZ();
   }
-
-  bool operator!=(const Vec3 &v) const { return !(*this == v); }
 
   Vec3 operator-() const { return Vec3(-this->x, -this->y, -this->z); }
 
