@@ -29,17 +29,28 @@ Requirements:
 - GCC (will add support for other compilers in the future)
 
 ```
-mkdir build
-cd build
-cmake ..
-cmake --build ..
+cmake -B build .
+cmake --build build
 ```
 
 The binary will be in the `bin` folder.
 
-> Note: I have no prior professional experience with C++ and C++ tools such as
-> CMake. I am learning C++ as I build this project. If anything does not make
-> sense to you, please file an issue. Thank you for your understanding and help.
+Test
+----
+
+After building the program, you can run unit tests by doing:
+
+```bash
+cd build
+ctest
+```
+
+Or, if you want to see a more verbose output:
+
+```bash
+cd bin
+./raydiance_test
+```
 
 Blog
 ----
