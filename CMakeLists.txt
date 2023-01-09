@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
+cmake_policy(SET CMP0135 NEW)
 
 project(Raydiance)
 
@@ -24,9 +25,9 @@ FetchContent_MakeAvailable(googletest)
 # Build
 
 include_directories(
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/include/math
-    ${PROJECT_SOURCE_DIR}/include/3d
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/math
+    ${CMAKE_SOURCE_DIR}/include/3d
     )
 add_executable(raydiance src/main.cpp)
 
