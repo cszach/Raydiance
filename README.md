@@ -1,6 +1,8 @@
 Raydiance
 ========
 
+![CMake workflow status](https://github.com/cszach/Raydiance/actions/workflows/cmake.yml/badge.svg)
+
 [blog]: https://cszach.github.io/Raydiance/
 
 This is hopefully will be my long-term ray tracing software project. I will keep
