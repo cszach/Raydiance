@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "math/RayTest.hpp"
 #include "math/Vec3Test.hpp"
 
 int main(int argc, char **argv) {
