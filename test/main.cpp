@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 
+#include "3d/CameraTest.hpp"
 #include "math/RayTest.hpp"
 #include "math/Vec3Test.hpp"
 
