@@ -28,6 +28,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/math
     ${CMAKE_SOURCE_DIR}/include/3d
+    ${CMAKE_SOURCE_DIR}/include/output
     )
 add_executable(raydiance src/main.cpp)
 
