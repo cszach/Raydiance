@@ -1,5 +1,4 @@
-Raydiance
-========
+# Raydiance
 
 ![CMake workflow status](https://github.com/cszach/Raydiance/actions/workflows/cmake.yml/badge.svg)
 
@@ -9,8 +8,7 @@ This is hopefully will be my long-term ray tracing software project. I will keep
 adding features to the ray tracer as I learn and discover ray tracing
 techniques.
 
-Goal
-----
+## Goal
 
 At the moment, I see two primary goals for this project:
 
@@ -18,15 +16,16 @@ At the moment, I see two primary goals for this project:
 2. Create an interactive application window (perhaps using ImGui) to demonstrate
    the ray tracing API.
 
-Current status
---------------
+## Current status
 
-Hello world project with CMake set up.
+Graphics hello world.
 
-Build
------
+![Current output image.](image.ppm)
+
+## Build
 
 Requirements:
+
 - CMake version 3.0+
 - GCC (will add support for other compilers in the future)
 
@@ -37,8 +36,7 @@ cmake --build build
 
 The binary will be in the `bin` folder.
 
-Test
-----
+## Test
 
 After building the program, you can run unit tests by doing:
 
@@ -54,8 +52,7 @@ cd bin
 ./raydiance_test
 ```
 
-Blog
-----
+## Blog
 
 I am setting up a development blog for this project. When it is done, it should
 live [here][blog].
