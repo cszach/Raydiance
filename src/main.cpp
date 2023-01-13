@@ -15,19 +15,12 @@ int main() {
 
   f_ostream.rdbuf(f_out.rdbuf());
 
-  PPMOutput output(IMAGE_WIDTH, IMAGE_HEIGHT, 255, f_ostream);
+  auto pOutput =
+      make_shared<PPMOutput>(IMAGE_WIDTH, IMAGE_HEIGHT, 255, f_ostream);
 
-  output.writeHeader();
+  pOutput->writeHeader();
 
-  for (int i = 0; i < IMAGE_WIDTH; i++) {
-    for (int j = 0; j < IMAGE_HEIGHT; j++) {
-      int r = static_cast<int>(255.999 * static_cast<double>(i) /
-                               (IMAGE_WIDTH - 1));
-      int g = static_cast<int>(255.999 * static_cast<double>(j) /
-                               (IMAGE_WIDTH - 1));
-      int b = static_cast<int>(255.99 * 0.25);
+  Renderer renderer(pOutput);
 
-      output.writeColor(r, g, b);
-    }
-  }
+  renderer.render(Scene(), Camera());
 }
