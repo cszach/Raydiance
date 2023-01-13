@@ -7,15 +7,24 @@
 
 class PPMOutput : public ImageOutput {
 private:
+  int width;
+  int height;
+  int max_color;
   std::ostream &output_stream;
 
 public:
-  PPMOutput() : output_stream(std::cout) {}
-  PPMOutput(std::ostream &output_stream) : output_stream(output_stream) {}
+  PPMOutput(int width, int height, int max_color = 255,
+            std::ostream &output_stream = std::cout)
+      : output_stream(output_stream) {}
 
-  void writeHeader(int image_width, int image_height, int max_color) {
+  int getWidth() const { return this->width; }
+  int getHeight() const { return this->height; }
+  int getMaxColor() const { return this->max_color; }
+  std::ostream &getOutputStream() const { return this->output_stream; }
+
+  void writeHeader() {
     this->output_stream << "P3\n"
-                        << image_width << ' ' << image_height << '\n'
+                        << this->width << ' ' << this->height << '\n'
                         << max_color << '\n';
   }
 
