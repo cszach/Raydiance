@@ -20,7 +20,7 @@ At the moment, I see two primary goals for this project:
 
 Graphics hello world.
 
-![Current output image.](image.ppm)
+[![Current output image.](image.png)](image.ppm)
 
 ## Build
 
