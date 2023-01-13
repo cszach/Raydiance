@@ -5,19 +5,19 @@
 #include "Renderer.hpp"
 
 int main() {
-  std::ofstream f_out("image.ppm");
-  std::ostream &f_ostream(f_out);
-
-  f_ostream.rdbuf(f_out.rdbuf());
-
-  PPMOutput output(f_ostream);
-
   // Image
 
   const int IMAGE_WIDTH = 256;
   const int IMAGE_HEIGHT = 256;
 
-  output.writeHeader(IMAGE_WIDTH, IMAGE_HEIGHT, 255);
+  std::ofstream f_out("image.ppm");
+  std::ostream &f_ostream(f_out);
+
+  f_ostream.rdbuf(f_out.rdbuf());
+
+  PPMOutput output(IMAGE_WIDTH, IMAGE_HEIGHT, 255, f_ostream);
+
+  output.writeHeader();
 
   for (int i = 0; i < IMAGE_WIDTH; i++) {
     for (int j = 0; j < IMAGE_HEIGHT; j++) {
