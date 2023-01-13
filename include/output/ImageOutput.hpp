@@ -3,7 +3,9 @@
 
 class ImageOutput {
 public:
-  virtual inline void writeColor(int r, int g, int b) const = 0;
+  virtual int getWidth() const = 0;
+  virtual int getHeight() const = 0;
+  virtual void writeColor(int r, int g, int b) const = 0;
 };
 
 #endif // IMAGE_OUTPUT_H

@@ -15,10 +15,11 @@ private:
 public:
   PPMOutput(int width, int height, int max_color = 255,
             std::ostream &output_stream = std::cout)
-      : output_stream(output_stream) {}
+      : width(width), height(height), max_color(max_color),
+        output_stream(output_stream) {}
 
-  int getWidth() const { return this->width; }
-  int getHeight() const { return this->height; }
+  int getWidth() const override { return this->width; }
+  int getHeight() const override { return this->height; }
   int getMaxColor() const { return this->max_color; }
   std::ostream &getOutputStream() const { return this->output_stream; }
 
