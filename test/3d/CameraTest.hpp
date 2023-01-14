@@ -14,7 +14,7 @@ protected:
   const double viewport_height = 2.0 * h;
   const double viewport_width = viewport_height * aspect_ratio;
   const double focal_length = 1.0;
-  const Point3 origin = Point3(0, 1, 2);
+  const Point3 position = Point3(0, 1, 2);
 
   Camera camera;
   Camera camera_50;
@@ -25,7 +25,7 @@ protected:
     camera_50 = Camera(50, aspect_ratio);
     default_camera = Camera();
 
-    camera.setOrigin(origin);
+    camera.setPosition(position);
     camera_50.setFocalLength(2);
   }
 };
@@ -36,7 +36,7 @@ TEST_F(CameraTest, GettersAndSetters) {
   EXPECT_EQ(camera.getViewportHeight(), 2.0 * h);
   EXPECT_EQ(camera.getViewportWidth(), camera.getViewportHeight() * 16.0 / 9.0);
   EXPECT_EQ(camera.getFocalLength(), 1.0);
-  EXPECT_TRUE(camera.getOrigin().equals(origin));
+  EXPECT_TRUE(camera.getPosition().equals(position));
 
   camera.setVerticalFov(50);
 
@@ -53,6 +53,6 @@ TEST_F(CameraTest, GettersAndSetters) {
   camera.setFocalLength(camera_50.getFocalLength());
   EXPECT_EQ(camera.getFocalLength(), camera_50.getFocalLength());
 
-  camera.setOrigin(Point3(0, 0, 0));
-  EXPECT_TRUE(camera.getOrigin().equals(default_camera.getOrigin()));
+  camera.setPosition(Point3(0, 0, 0));
+  EXPECT_TRUE(camera.getPosition().equals(default_camera.getPosition()));
 }

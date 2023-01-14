@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "MathUtils.hpp"
+#include "Ray.hpp"
 #include "Vec3.hpp"
 
 class Camera {
@@ -14,7 +15,7 @@ private:
   double viewport_height;
   double viewport_width;
   double focal_length = 1.0;
-  Point3 origin = Point3(0, 0, 0);
+  Point3 position = Point3(0, 0, 0);
 
   Vec3 horizontal;
   Vec3 vertical;
@@ -38,7 +39,7 @@ public:
   double getViewportHeight() const { return this->viewport_height; }
   double getViewportWidth() const { return this->viewport_width; }
   double getFocalLength() const { return this->focal_length; }
-  Point3 getOrigin() const { return this->origin; }
+  Point3 getPosition() const { return this->position; }
 
   void setVerticalFov(double vertical_fov) {
     this->vertical_fov = vertical_fov;
@@ -65,9 +66,14 @@ public:
     this->focal_length = focal_length;
   }
 
-  void setOrigin(Point3 origin) {
-    this->lower_left_corner += origin - this->origin;
-    this->origin = origin;
+  void setPosition(const Point3 &position) {
+    this->lower_left_corner += position - this->position;
+    this->position = position;
+  }
+
+  Ray getRay(double u, double v) const {
+    return Ray(this->position, this->lower_left_corner + u * this->horizontal +
+                                   v * this->vertical - this->position);
   }
 
 private:
@@ -92,7 +98,7 @@ private:
   }
 
   void computeLowerLeftCorner() {
-    this->lower_left_corner = this->origin - this->horizontal / 2 -
+    this->lower_left_corner = this->position - this->horizontal / 2 -
                               this->vertical / 2 - Vec3(0, 0, focal_length);
   }
 };
