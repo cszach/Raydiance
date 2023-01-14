@@ -99,5 +99,6 @@ inline Vec3 crossProduct(const Vec3 &u, const Vec3 &v) {
 inline Vec3 unitVectorFrom(const Vec3 &v) { return v / v.length(); }
 
 using Point3 = Vec3;
+using Color = Vec3;
 
 #endif // VEC3_H
