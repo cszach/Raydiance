@@ -18,7 +18,8 @@ At the moment, I see two primary goals for this project:
 
 ## Current status
 
-Graphics hello world.
+Basic ray collision with spheres. A test scene is made with one sphere. Output
+image is shown below; colors are based on the sphere's normals.
 
 [![Current output image.](image.png)](image.ppm)
 
