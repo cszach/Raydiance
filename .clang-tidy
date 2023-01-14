@@ -1,0 +1,5 @@
+Checks: 'clang-analyzer-*,performance-*,readability-*'
+WarningsAsErrors: 'clang-analyzer-*,performance-*,readability-*'
+
+- key: MinimumVariableNameLength
+  value: 0
