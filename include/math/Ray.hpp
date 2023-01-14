@@ -16,7 +16,7 @@ public:
   inline Point3 getOrigin() const { return this->origin; }
   inline Vec3 getDirection() const { return this->direction; }
 
-  Point3 at(double t) { return this->origin + t * this->direction; }
+  Point3 at(double t) const { return this->origin + t * this->direction; }
 };
 
 #endif // RAY_H
