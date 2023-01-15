@@ -27,10 +27,10 @@ private:
   Point3 position;
 
 public:
-  Object() : position(Point3(0, 0, 0)) {}
+  Object();
 
-  Point3 getPosition() const { return this->position; }
-  void setPosition(const Point3 &position) { this->position = position; }
+  Point3 getPosition() const;
+  void setPosition(const Point3 &position);
 
   virtual bool hit(const Ray &ray, double t_min, double t_max,
                    HitRecord &rec) const = 0;

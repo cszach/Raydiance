@@ -9,14 +9,13 @@ private:
   Vec3 direction;
 
 public:
-  Ray() : origin(Point3(0, 0, 0)), direction(Vec3(0, 0, -1)) {}
-  Ray(const Point3 &origin, const Vec3 &direction)
-      : origin(origin), direction(direction) {}
+  Ray();
+  Ray(const Point3 &origin, const Vec3 &direction);
 
-  inline Point3 getOrigin() const { return this->origin; }
-  inline Vec3 getDirection() const { return this->direction; }
+  Point3 getOrigin() const;
+  Vec3 getDirection() const;
 
-  Point3 at(double t) const { return this->origin + t * this->direction; }
+  Point3 at(double t) const;
 };
 
 #endif // RAY_H

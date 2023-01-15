@@ -10,60 +10,32 @@ private:
   double z;
 
 public:
-  Vec3() : x(0), y(0), z(0) {}
-  Vec3(double x, double y, double z) : x(x), y(y), z(z) {}
+  Vec3();
+  Vec3(double x, double y, double z);
 
-  double getX() const { return this->x; }
-  double getY() const { return this->y; }
-  double getZ() const { return this->z; }
+  double getX() const;
+  double getY() const;
+  double getZ() const;
 
-  void setX(double x) { this->x = x; }
-  void setY(double y) { this->y = y; }
-  void setZ(double z) { this->z = z; }
+  void setX(double x);
+  void setY(double y);
+  void setZ(double z);
 
-  double length() const { return sqrt(this->lengthSquared()); }
+  double length() const;
 
-  double lengthSquared() const {
-    return this->x * this->x + this->y * this->y + this->z * this->z;
-  }
+  double lengthSquared() const;
 
-  bool equals(const Vec3 &v) const {
-    return this->x == v.getX() && this->y == v.getY() && this->z == v.getZ();
-  }
+  bool equals(const Vec3 &v) const;
 
-  Vec3 operator-() const { return Vec3(-this->x, -this->y, -this->z); }
+  Vec3 operator-() const;
 
-  Vec3 &operator+=(const Vec3 &v) {
-    this->x += v.getX();
-    this->y += v.getY();
-    this->z += v.getZ();
+  Vec3 &operator+=(const Vec3 &v);
 
-    return *this;
-  }
+  Vec3 &operator-=(const Vec3 &v);
 
-  Vec3 &operator-=(const Vec3 &v) {
-    this->x -= v.getX();
-    this->y -= v.getY();
-    this->z -= v.getZ();
+  Vec3 &operator*=(const Vec3 &v);
 
-    return *this;
-  }
-
-  Vec3 &operator*=(const Vec3 &v) {
-    this->x *= v.getX();
-    this->y *= v.getY();
-    this->z *= v.getZ();
-
-    return *this;
-  }
-
-  Vec3 &operator/=(const double t) {
-    this->x /= t;
-    this->y /= t;
-    this->z /= t;
-
-    return *this;
-  }
+  Vec3 &operator/=(const double t);
 };
 
 inline Vec3 operator+(const Vec3 &u, const Vec3 &v) {

@@ -3,7 +3,6 @@
 
 #include <cmath>
 
-#include "MathUtils.hpp"
 #include "Ray.hpp"
 #include "Vec3.hpp"
 
@@ -22,85 +21,32 @@ private:
   Point3 lower_left_corner;
 
 public:
-  Camera() : Camera(50, 1.0) {}
-  Camera(double vertical_fov, double aspect_ratio)
-      : vertical_fov(vertical_fov), aspect_ratio(aspect_ratio) {
-    double theta = degToRad(vertical_fov);
-    double h = tan(theta / 2.0);
+  Camera();
+  Camera(double vertical_fov, double aspect_ratio);
 
-    this->viewport_height = 2.0 * h;
+  double getVerticalFOV() const;
+  double getAspectRatio() const;
+  double getViewportHeight() const;
+  double getViewportWidth() const;
+  double getFocalLength() const;
+  Point3 getPosition() const;
 
-    this->setViewportHeight(2.0 * h);
-    this->computeLowerLeftCorner();
-  }
+  void setVerticalFov(double vertical_fov);
 
-  double getVerticalFOV() const { return this->vertical_fov; }
-  double getAspectRatio() const { return this->aspect_ratio; }
-  double getViewportHeight() const { return this->viewport_height; }
-  double getViewportWidth() const { return this->viewport_width; }
-  double getFocalLength() const { return this->focal_length; }
-  Point3 getPosition() const { return this->position; }
+  void setAspectRatio(double aspect_ratio);
 
-  void setVerticalFov(double vertical_fov) {
-    this->vertical_fov = vertical_fov;
+  void setFocalLength(double focal_length);
 
-    double theta = degToRad(vertical_fov);
-    double h = tan(theta / 2.0);
+  void setPosition(const Point3 &position);
 
-    this->setViewportHeight(2.0 * h);
-  }
-
-  void setAspectRatio(double aspect_ratio) {
-    this->aspect_ratio = aspect_ratio;
-    this->viewport_width = this->viewport_height * this->aspect_ratio;
-    this->lower_left_corner.setX(
-        this->lower_left_corner.getX() +
-        (this->horizontal.getX() - this->viewport_width) / 2.0);
-    this->horizontal.setX(this->viewport_width);
-    this->vertical.setY(this->viewport_height);
-  }
-
-  void setFocalLength(double focal_length) {
-    this->lower_left_corner.setZ(this->lower_left_corner.getZ() +
-                                 this->focal_length - focal_length);
-    this->focal_length = focal_length;
-  }
-
-  void setPosition(const Point3 &position) {
-    this->lower_left_corner += position - this->position;
-    this->position = position;
-  }
-
-  Ray getRay(double u, double v) const {
-    return Ray(this->position, this->lower_left_corner + u * this->horizontal +
-                                   v * this->vertical - this->position);
-  }
+  Ray getRay(double u, double v) const;
 
 private:
-  void setViewportHeight(double viewport_height, bool setViewportWidth = true) {
-    this->viewport_height = viewport_height;
-    this->vertical = Vec3(0, viewport_height, 0);
+  void setViewportHeight(double viewport_height, bool setViewportWidth);
 
-    if (setViewportWidth) {
-      this->setViewportWidth(this->viewport_height * this->aspect_ratio, false);
-      this->computeLowerLeftCorner();
-    }
-  }
+  void setViewportWidth(double viewport_width, bool setViewportHeight);
 
-  void setViewportWidth(double viewport_width, bool setViewportHeight = true) {
-    this->viewport_width = viewport_width;
-    this->horizontal = Vec3(viewport_width, 0, 0);
-
-    if (setViewportHeight) {
-      this->setViewportHeight(this->viewport_width / this->aspect_ratio, false);
-      this->computeLowerLeftCorner();
-    }
-  }
-
-  void computeLowerLeftCorner() {
-    this->lower_left_corner = this->position - this->horizontal / 2 -
-                              this->vertical / 2 - Vec3(0, 0, focal_length);
-  }
+  void computeLowerLeftCorner();
 };
 
 #endif // CAMERA_H
