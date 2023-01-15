@@ -1,8 +1,6 @@
 #include <fstream>
 #include <memory>
-#include <ostream>
 
-#include "PPMOutput.hpp"
 #include "Renderer.hpp"
 #include "Scene.hpp"
 #include "Sphere.hpp"
@@ -15,16 +13,8 @@ int main() {
 
   const int IMAGE_WIDTH = 256;
   const int IMAGE_HEIGHT = 256;
-  const int MAX_COLOR = 255;
 
   std::ofstream f_out("image.ppm");
-  std::ostream &f_ostream(f_out);
-
-  f_ostream.rdbuf(f_out.rdbuf());
-
-  auto output = PPMOutput(IMAGE_WIDTH, IMAGE_HEIGHT, MAX_COLOR, f_ostream);
-
-  output.writeHeader();
 
   // Camera
 
@@ -38,7 +28,31 @@ int main() {
 
   scene.add(test_sphere);
 
-  Renderer renderer(output);
+  // Render
+
+  Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
+
+  float *frame_buffer = renderer.getFrameBuffer();
 
   renderer.render(scene, camera);
+
+  // Write to PPM
+
+  f_out << "P3\n" << IMAGE_WIDTH << ' ' << IMAGE_HEIGHT << '\n' << 255 << '\n';
+
+  for (int i = 0; i < IMAGE_WIDTH; i++) {
+    for (int j = 0; j < IMAGE_HEIGHT; j++) {
+      int pixel_index = 3 * (i + j * IMAGE_WIDTH);
+
+      float r = frame_buffer[pixel_index + 0];
+      float g = frame_buffer[pixel_index + 1];
+      float b = frame_buffer[pixel_index + 2];
+
+      int ir = int(255.99 * r);
+      int ig = int(255.99 * g);
+      int ib = int(255.99 * b);
+
+      f_out << ir << ' ' << ig << ' ' << ib << '\n';
+    }
+  }
 }
