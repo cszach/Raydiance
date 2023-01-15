@@ -49,7 +49,7 @@ ctest
 Or, if you want to see a more verbose output:
 
 ```bash
-cd bin
+cd build/bin
 ./raydiance_test
 ```
 
