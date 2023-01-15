@@ -2,19 +2,26 @@
 #define RENDERER_H
 
 #include "Camera.hpp"
-#include "ImageOutput.hpp"
 #include "Ray.hpp"
 #include "Scene.hpp"
 #include "Vec3.hpp"
 
 class Renderer {
 private:
-  ImageOutput &output;
+  int output_width;
+  int output_height;
+  int num_pixels;
+  size_t frame_buffer_size;
+  float *frame_buffer;
 
 public:
-  Renderer(ImageOutput &output);
+  Renderer(int output_width, int output_height);
 
-  ImageOutput &getOutput() const;
+  int getOutputWidth();
+  int getOutputHeight();
+  float *getFrameBuffer();
+
+  void setOutputSize(int output_width, int output_height);
 
   void render(const Scene &scene, const Camera &camera);
 
