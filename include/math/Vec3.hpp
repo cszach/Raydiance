@@ -13,13 +13,13 @@ public:
   Vec3() : x(0), y(0), z(0) {}
   Vec3(double x, double y, double z) : x(x), y(y), z(z) {}
 
-  inline double getX() const { return this->x; }
-  inline double getY() const { return this->y; }
-  inline double getZ() const { return this->z; }
+  double getX() const { return this->x; }
+  double getY() const { return this->y; }
+  double getZ() const { return this->z; }
 
-  inline void setX(double x) { this->x = x; }
-  inline void setY(double y) { this->y = y; }
-  inline void setZ(double z) { this->z = z; }
+  void setX(double x) { this->x = x; }
+  void setY(double y) { this->y = y; }
+  void setZ(double z) { this->z = z; }
 
   double length() const { return sqrt(this->lengthSquared()); }
 
