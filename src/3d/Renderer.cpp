@@ -29,14 +29,14 @@ void Renderer::render(const Scene &scene, const Camera &camera) {
 
   auto center = camera.getPosition();
 
-  for (int j = 0; j < this->_output_height; ++j) {
-    for (int i = 0; i < this->_output_width; ++i) {
+  for (int j = 0; j < _output_height; ++j) {
+    for (int i = 0; i < _output_width; ++i) {
       auto pixel_center = pixel00 + (i * pixel_delta_u) + (j * pixel_delta_v);
 
       Ray ray(center, pixel_center - center);
-      Color ray_color = this->getRayColor(ray, scene);
+      Color ray_color = getRayColor(ray, scene);
 
-      int pixel_index = 3 * (i + j * this->_output_width);
+      int pixel_index = 3 * (i + j * _output_width);
 
       _frame_buffer[pixel_index] =
           static_cast<float>(clamp(ray_color.getX(), 0, 0.999));
@@ -48,8 +48,7 @@ void Renderer::render(const Scene &scene, const Camera &camera) {
   }
 }
 
-Color Renderer::getRayColor(const Ray &ray, const Scene &scene) {
-
+Color Renderer::getRayColor(const Ray &ray, const Scene &scene) const {
   if (HitRecord rec; scene.hit(ray, 0.001, INFINITY, rec)) {
     return 0.5 * (rec.normal + Color(1, 1, 1));
   }

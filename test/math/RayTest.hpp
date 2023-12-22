@@ -3,10 +3,11 @@
 #include "Ray.hpp"
 
 class RayTest : public ::testing::Test {
-protected:
+public:
   Ray default_ray;
   Ray r;
 
+protected:
   void SetUp() override {
     default_ray = Ray();
     r = Ray(Point3(0, 1, 2), Vec3(3, 4, 5));

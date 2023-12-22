@@ -13,7 +13,6 @@ Camera::Camera() = default;
 double Camera::getVerticalFOV() const { return _vertical_fov; }
 double Camera::getAspectRatio() const { return _aspect_ratio; }
 double Camera::getFocalLength() const { return _focal_length; }
-Point3 Camera::getPosition() const { return _position; }
 Point3 Camera::getViewportU() const { return _viewport_u; }
 Point3 Camera::getViewportV() const { return _viewport_v; }
 Point3 Camera::getViewportUpperLeft() const { return _viewport_upper_left; }
@@ -47,9 +46,9 @@ void Camera::setFocalLength(double focal_length) {
   computerViewportUpperLeft();
 }
 
-void Camera::setPosition(const Point3 &position) {
-  _position = position;
-  computerViewportUpperLeft();
+bool Camera::hit(const Ray &ray, double t_min, double t_max,
+                 HitRecord &rec) const {
+  return false;
 }
 
 // PRIVATE

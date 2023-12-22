@@ -16,8 +16,8 @@ public:
 
   void add(shared_ptr<Object> object);
 
-  virtual bool hit(const Ray &ray, double t_min, double t_max,
-                   HitRecord &rec) const override;
+  bool hit(const Ray &ray, double t_min, double t_max,
+           HitRecord &rec) const override;
 
 private:
   std::vector<shared_ptr<Object>> objects;
