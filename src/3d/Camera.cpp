@@ -1,88 +1,60 @@
-#include "Camera.hpp"
-
 #include <cmath>
 
+#include "Camera.hpp"
 #include "MathUtils.hpp"
 
-void Camera::setViewportHeight(double viewport_height,
-                               bool setViewportWidth = true) {
-  this->viewport_height = viewport_height;
-  this->vertical = Vec3(0, viewport_height, 0);
-
-  if (setViewportWidth) {
-    this->setViewportWidth(this->viewport_height * this->aspect_ratio, false);
-    this->computeLowerLeftCorner();
-  }
+Camera::Camera(double vertical_fov, double aspect_ratio) {
+  setVerticalFov(vertical_fov);
+  setAspectRatio(aspect_ratio);
 }
 
-void Camera::setViewportWidth(double viewport_width,
-                              bool setViewportHeight = true) {
-  this->viewport_width = viewport_width;
-  this->horizontal = Vec3(viewport_width, 0, 0);
+Camera::Camera() = default;
 
-  if (setViewportHeight) {
-    this->setViewportHeight(this->viewport_width / this->aspect_ratio, false);
-    this->computeLowerLeftCorner();
-  }
-}
-
-void Camera::computeLowerLeftCorner() {
-  this->lower_left_corner = this->position - this->horizontal / 2 -
-                            this->vertical / 2 - Vec3(0, 0, focal_length);
-}
-
-Camera::Camera() : Camera(50, 1.0) {}
-Camera::Camera(double vertical_fov, double aspect_ratio)
-    : vertical_fov(vertical_fov), aspect_ratio(aspect_ratio) {
-  double theta = degToRad(vertical_fov);
-  double h = tan(theta / 2.0);
-
-  this->viewport_height = 2.0 * h;
-
-  this->setViewportHeight(2.0 * h);
-  this->computeLowerLeftCorner();
-}
-
-double Camera::getVerticalFOV() const { return this->vertical_fov; }
-double Camera::getAspectRatio() const { return this->aspect_ratio; }
-double Camera::getViewportHeight() const { return this->viewport_height; }
-double Camera::getViewportWidth() const { return this->viewport_width; }
-double Camera::getFocalLength() const { return this->focal_length; }
-Point3 Camera::getPosition() const { return this->position; }
+double Camera::getVerticalFOV() const { return _vertical_fov; }
+double Camera::getAspectRatio() const { return _aspect_ratio; }
+double Camera::getFocalLength() const { return _focal_length; }
+Point3 Camera::getPosition() const { return _position; }
+Point3 Camera::getViewportU() const { return _viewport_u; }
+Point3 Camera::getViewportV() const { return _viewport_v; }
+Point3 Camera::getViewportUpperLeft() const { return _viewport_upper_left; }
 
 void Camera::setVerticalFov(double vertical_fov) {
-  this->vertical_fov = vertical_fov;
+  _vertical_fov = vertical_fov;
+  _theta = degToRad(vertical_fov);
+  _h = tan(_theta / 2);
 
-  double theta = degToRad(vertical_fov);
-  double h = tan(theta / 2.0);
-
-  this->setViewportHeight(2.0 * h);
+  setFocalLength(_focal_length);
 }
 
 void Camera::setAspectRatio(double aspect_ratio) {
-  this->aspect_ratio = aspect_ratio;
-  this->viewport_width = this->viewport_height * this->aspect_ratio;
-  this->lower_left_corner.setX(
-      this->lower_left_corner.getX() +
-      (this->horizontal.getX() - this->viewport_width) / 2.0);
-  this->horizontal.setX(this->viewport_width);
-  this->vertical.setY(this->viewport_height);
+  _aspect_ratio = aspect_ratio;
+
+  auto viewport_width = _viewport_height * _aspect_ratio;
+  _viewport_u = Vec3(viewport_width, 0, 0);
+
+  computerViewportUpperLeft();
 }
 
 void Camera::setFocalLength(double focal_length) {
-  this->lower_left_corner.setZ(this->lower_left_corner.getZ() +
-                               this->focal_length - focal_length);
-  this->focal_length = focal_length;
+  _focal_length = focal_length;
+  _viewport_height = 2 * _h * _focal_length;
+
+  auto viewport_width = _viewport_height * _aspect_ratio;
+
+  _viewport_u = Vec3(viewport_width, 0, 0);
+  _viewport_v = Vec3(0, -_viewport_height, 0);
+
+  computerViewportUpperLeft();
 }
 
 void Camera::setPosition(const Point3 &position) {
-  this->lower_left_corner += position - this->position;
-  this->position = position;
-}
-
-Ray Camera::getRay(double u, double v) const {
-  return Ray(this->position, this->lower_left_corner + u * this->horizontal +
-                                 v * this->vertical - this->position);
+  _position = position;
+  computerViewportUpperLeft();
 }
 
 // PRIVATE
+
+void Camera::computerViewportUpperLeft() {
+  _viewport_upper_left =
+      _position - Vec3(0, 0, _focal_length) - _viewport_u / 2 - _viewport_v / 2;
+}

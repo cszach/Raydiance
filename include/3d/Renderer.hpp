@@ -8,18 +8,18 @@
 
 class Renderer {
 private:
-  int output_width;
-  int output_height;
-  int num_pixels;
-  size_t frame_buffer_size;
-  float *frame_buffer;
+  int _output_width;
+  int _output_height;
+
+  int _num_pixels;
+  std::vector<float> _frame_buffer;
 
 public:
   Renderer(int output_width, int output_height);
 
-  int getOutputWidth();
-  int getOutputHeight();
-  float *getFrameBuffer();
+  int getOutputWidth() const;
+  int getOutputHeight() const;
+  std::vector<float> getFrameBuffer() const;
 
   void setOutputSize(int output_width, int output_height);
 
