@@ -24,10 +24,11 @@ struct HitRecord {
 
 class Object {
 private:
-  Point3 position;
+  Point3 _position;
 
 public:
   Object();
+  virtual ~Object() = default;
 
   Point3 getPosition() const;
   void setPosition(const Point3 &position);

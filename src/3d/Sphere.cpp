@@ -3,15 +3,14 @@
 #include "Ray.hpp"
 #include "Vec3.hpp"
 
-Sphere::Sphere(double radius) : radius(radius) {}
+Sphere::Sphere(double radius) : _radius(radius) {}
 
 bool Sphere::hit(const Ray &ray, double t_min, double t_max,
                  HitRecord &rec) const {
-  Vec3 o_c =
-      ray.getOrigin() - this->getPosition(); // ray origin - sphere position
+  Vec3 o_c = ray.getOrigin() - getPosition(); // ray origin - sphere position
   double a = dotProduct(ray.getDirection(), ray.getDirection());
   double half_b = dotProduct(ray.getDirection(), o_c);
-  double c = dotProduct(o_c, o_c) - this->radius * this->radius;
+  double c = dotProduct(o_c, o_c) - _radius * _radius;
 
   double discriminant = half_b * half_b - a * c;
 
@@ -29,7 +28,7 @@ bool Sphere::hit(const Ray &ray, double t_min, double t_max,
 
   rec.t = root;
   rec.p = ray.at(root);
-  Vec3 outward_normal = (rec.p - this->getPosition()) / radius;
+  Vec3 outward_normal = (rec.p - getPosition()) / _radius;
   rec.setFaceNormal(ray, outward_normal);
 
   return true;

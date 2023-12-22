@@ -1,8 +1,8 @@
-#include "Object.hpp"
-
 #include <memory>
 
-Object::Object() : position(Point3(0, 0, 0)) {}
+#include "Object.hpp"
 
-Point3 Object::getPosition() const { return this->position; }
-void Object::setPosition(const Point3 &position) { this->position = position; }
+Object::Object() = default;
+
+Point3 Object::getPosition() const { return _position; }
+void Object::setPosition(const Point3 &position) { _position = position; }

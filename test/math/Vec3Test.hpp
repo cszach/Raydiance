@@ -3,10 +3,11 @@
 #include "Vec3.hpp"
 
 class Vec3Test : public ::testing::Test {
-protected:
+public:
   Vec3 u;
   Vec3 v;
 
+protected:
   void SetUp() override {
     u = Vec3(0, 1, 2);
     v = Vec3(3, 4, 5);

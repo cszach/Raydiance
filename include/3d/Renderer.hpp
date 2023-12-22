@@ -26,7 +26,7 @@ public:
   void render(const Scene &scene, const Camera &camera);
 
 private:
-  Color getRayColor(const Ray &ray, const Scene &scene);
+  Color getRayColor(const Ray &ray, const Scene &scene) const;
 };
 
 #endif // RENDERER_H

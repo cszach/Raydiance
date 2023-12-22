@@ -1,10 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "Object.hpp"
 #include "Ray.hpp"
 #include "Vec3.hpp"
 
-class Camera {
+class Camera : public Object {
 private:
   double _vertical_fov;
   double _aspect_ratio;
@@ -26,7 +27,6 @@ public:
   double getVerticalFOV() const;
   double getAspectRatio() const;
   double getFocalLength() const;
-  Point3 getPosition() const;
   Vec3 getViewportU() const;
   Vec3 getViewportV() const;
   Point3 getViewportUpperLeft() const;
@@ -34,7 +34,8 @@ public:
   void setVerticalFov(double vertical_fov);
   void setAspectRatio(double aspect_ratio);
   void setFocalLength(double focal_length);
-  void setPosition(const Point3 &position);
+  bool hit(const Ray &ray, double t_min, double t_max,
+           HitRecord &rec) const override;
 
 private:
   void computerViewportUpperLeft();

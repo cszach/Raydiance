@@ -5,9 +5,9 @@
 
 class Vec3 {
 private:
-  double x;
-  double y;
-  double z;
+  double _x;
+  double _y;
+  double _z;
 
 public:
   Vec3();

@@ -6,10 +6,10 @@
 
 class Sphere : public Object {
 private:
-  double radius;
+  double _radius;
 
 public:
-  Sphere(double radius);
+  explicit Sphere(double radius);
 
   bool hit(const Ray &ray, double t_min, double t_max,
            HitRecord &rec) const override;
