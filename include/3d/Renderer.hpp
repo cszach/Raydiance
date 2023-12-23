@@ -2,31 +2,49 @@
 #define RENDERER_H
 
 #include "Camera.hpp"
+#include "Interval.hpp"
 #include "Ray.hpp"
 #include "Scene.hpp"
 #include "Vec3.hpp"
 
 class Renderer {
 private:
+  Camera &_camera;
   int _output_width;
   int _output_height;
+  int _num_samples = 10;
 
   int _num_pixels;
   std::vector<float> _frame_buffer;
 
-public:
-  Renderer(int output_width, int output_height);
+  Point3 _pixel00;
+  Vec3 _pixel_delta_u;
+  Vec3 _pixel_delta_v;
+  Point3 _center;
 
+  static const Interval intensity;
+
+public:
+  Renderer(Camera &camera, int output_width, int output_height);
+
+  Camera &getCamera() const;
   int getOutputWidth() const;
   int getOutputHeight() const;
-  std::vector<float> getFrameBuffer() const;
+  int getNumSamples() const;
+  const std::vector<float> &getFrameBuffer() const;
 
+  void setCamera(const Camera &camera);
   void setOutputSize(int output_width, int output_height);
+  void setNumSamples(int num_samples);
 
-  void render(const Scene &scene, const Camera &camera);
+  void render(const Scene &scene);
 
 private:
+  Ray getRay(int i, int j) const;
+  Point3 getPixelSampleSquare() const;
   Color getRayColor(const Ray &ray, const Scene &scene) const;
 };
+
+const Interval Renderer::intensity(0.0, 0.999);
 
 #endif // RENDERER_H

@@ -31,9 +31,9 @@ int main() {
 
   // Render
 
-  Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
+  Renderer renderer(camera, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-  renderer.render(scene, camera);
+  renderer.render(scene);
 
   // Write to PPM
   const std::vector<float> frame_buffer = renderer.getFrameBuffer();
