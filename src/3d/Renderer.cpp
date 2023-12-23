@@ -1,13 +1,34 @@
 #include "Renderer.hpp"
 #include "MathUtils.hpp"
 
-Renderer::Renderer(int output_width, int output_height) {
-  setOutputSize(output_width, output_height);
+Renderer::Renderer(Camera &camera, int output_width, int output_height)
+    : _camera(camera) {
+  setOutputSize(output_width, output_height); // Must set before setCamera
+  setCamera(camera);
 }
 
+Camera &Renderer::getCamera() const { return _camera; }
 int Renderer::getOutputWidth() const { return _output_width; }
 int Renderer::getOutputHeight() const { return _output_height; }
-std::vector<float> Renderer::getFrameBuffer() const { return _frame_buffer; }
+int Renderer::getNumSamples() const { return _num_samples; }
+const std::vector<float> &Renderer::getFrameBuffer() const {
+  return _frame_buffer;
+}
+
+void Renderer::setCamera(const Camera &camera) {
+  _camera = camera;
+
+  auto viewport_u = camera.getViewportU();
+  auto viewport_v = camera.getViewportV();
+
+  _pixel_delta_u = viewport_u / _output_width;
+  _pixel_delta_v = viewport_v / _output_height;
+
+  _pixel00 =
+      camera.getViewportUpperLeft() + 0.5 * (_pixel_delta_u + _pixel_delta_v);
+
+  _center = camera.getPosition();
+}
 
 void Renderer::setOutputSize(int output_width, int output_height) {
   _output_width = output_width;
@@ -17,35 +38,51 @@ void Renderer::setOutputSize(int output_width, int output_height) {
   _frame_buffer = std::vector<float>(3 * _num_pixels);
 }
 
-void Renderer::render(const Scene &scene, const Camera &camera) {
-  auto viewport_u = camera.getViewportU();
-  auto viewport_v = camera.getViewportV();
+void Renderer::setNumSamples(int num_samples) { _num_samples = num_samples; }
 
-  auto pixel_delta_u = viewport_u / _output_width;
-  auto pixel_delta_v = viewport_v / _output_height;
-
-  auto pixel00 =
-      camera.getViewportUpperLeft() + 0.5 * (pixel_delta_u + pixel_delta_v);
-
-  auto center = camera.getPosition();
-
+void Renderer::render(const Scene &scene) {
   for (int j = 0; j < _output_height; ++j) {
     for (int i = 0; i < _output_width; ++i) {
-      auto pixel_center = pixel00 + (i * pixel_delta_u) + (j * pixel_delta_v);
+      Color pixel_color;
 
-      Ray ray(center, pixel_center - center);
-      Color ray_color = getRayColor(ray, scene);
+      for (int sample = 0; sample < _num_samples; ++sample) {
+        Ray ray = getRay(i, j);
+        pixel_color += getRayColor(ray, scene);
+      }
+
+      // Process samples
+
+      pixel_color /= _num_samples;
+
+      auto r = static_cast<float>(intensity.clamp(pixel_color.getX()));
+      auto g = static_cast<float>(intensity.clamp(pixel_color.getY()));
+      auto b = static_cast<float>(intensity.clamp(pixel_color.getZ()));
+
+      //  Write color
 
       int pixel_index = 3 * (i + j * _output_width);
 
-      _frame_buffer[pixel_index] =
-          static_cast<float>(clamp(ray_color.getX(), 0, 0.999));
-      _frame_buffer[pixel_index + 1] =
-          static_cast<float>(clamp(ray_color.getY(), 0, 0.999));
-      _frame_buffer[pixel_index + 2] =
-          static_cast<float>(clamp(ray_color.getZ(), 0, 0.999));
+      _frame_buffer[pixel_index] = r;
+      _frame_buffer[pixel_index + 1] = g;
+      _frame_buffer[pixel_index + 2] = b;
     }
   }
+}
+
+// PRIVATE
+
+Ray Renderer::getRay(int i, int j) const {
+  auto pixel_center = _pixel00 + i * _pixel_delta_u + j * _pixel_delta_v;
+  auto pixel_sample = pixel_center + getPixelSampleSquare();
+
+  return Ray(_center, pixel_sample - _center);
+}
+
+Point3 Renderer::getPixelSampleSquare() const {
+  auto x = -0.5 + random_double();
+  auto y = -0.5 + random_double();
+
+  return x * _pixel_delta_u + y * _pixel_delta_v;
 }
 
 Color Renderer::getRayColor(const Ray &ray, const Scene &scene) const {
