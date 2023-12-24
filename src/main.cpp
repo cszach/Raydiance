@@ -27,11 +27,17 @@ int main() {
   auto test_sphere = make_shared<Sphere>(0.5);
   test_sphere->setPosition(Point3(0, 0, -1));
 
+  auto floor = make_shared<Sphere>(100);
+  floor->setPosition(Point3(0, -100.5, -1));
+
   scene.add(test_sphere);
+  scene.add(floor);
 
   // Render
 
   Renderer renderer(camera, IMAGE_WIDTH, IMAGE_HEIGHT);
+  renderer.num_samples = 100;
+  renderer.num_bounces = 50;
 
   renderer.render(scene);
 
