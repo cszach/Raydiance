@@ -10,7 +10,6 @@ Renderer::Renderer(Camera &camera, int output_width, int output_height)
 Camera &Renderer::getCamera() const { return _camera; }
 int Renderer::getOutputWidth() const { return _output_width; }
 int Renderer::getOutputHeight() const { return _output_height; }
-int Renderer::getNumSamples() const { return _num_samples; }
 const std::vector<float> &Renderer::getFrameBuffer() const {
   return _frame_buffer;
 }
@@ -38,25 +37,23 @@ void Renderer::setOutputSize(int output_width, int output_height) {
   _frame_buffer = std::vector<float>(3 * _num_pixels);
 }
 
-void Renderer::setNumSamples(int num_samples) { _num_samples = num_samples; }
-
 void Renderer::render(const Scene &scene) {
   for (int j = 0; j < _output_height; ++j) {
     for (int i = 0; i < _output_width; ++i) {
       Color pixel_color;
 
-      for (int sample = 0; sample < _num_samples; ++sample) {
+      for (int sample = 0; sample < num_samples; ++sample) {
         Ray ray = getRay(i, j);
-        pixel_color += getRayColor(ray, scene);
+        pixel_color += getRayColor(ray, num_bounces, scene);
       }
 
       // Process samples
 
-      pixel_color /= _num_samples;
+      pixel_color /= num_samples;
 
-      auto r = static_cast<float>(intensity.clamp(pixel_color.getX()));
-      auto g = static_cast<float>(intensity.clamp(pixel_color.getY()));
-      auto b = static_cast<float>(intensity.clamp(pixel_color.getZ()));
+      auto r = static_cast<float>(intensity.clamp(pixel_color.x));
+      auto g = static_cast<float>(intensity.clamp(pixel_color.y));
+      auto b = static_cast<float>(intensity.clamp(pixel_color.z));
 
       //  Write color
 
@@ -85,15 +82,21 @@ Point3 Renderer::getPixelSampleSquare() const {
   return x * _pixel_delta_u + y * _pixel_delta_v;
 }
 
-Color Renderer::getRayColor(const Ray &ray, const Scene &scene) const {
+Color Renderer::getRayColor(const Ray &ray, int depth,
+                            const Scene &scene) const {
+  if (depth <= 0) {
+    return Color();
+  }
+
   if (HitRecord rec; scene.hit(ray, 0.001, INFINITY, rec)) {
-    return 0.5 * (rec.normal + Color(1, 1, 1));
+    Vec3 direction = Vec3::randomOnHemisphere(rec.normal);
+    return 0.5 * getRayColor(Ray(rec.p, direction), depth - 1, scene);
   }
 
   // Miss shader
 
-  Vec3 unit_direction = unitVectorFrom(ray.getDirection());
-  auto a = 0.5 * (unit_direction.getY() + 1.0);
+  Vec3 unit_direction = ray.getDirection().normalize();
+  auto a = 0.5 * (unit_direction.y + 1.0);
 
   return (1.0 - a) * Color(1, 1, 1) + a * Color(0.5, 0.7, 1.0);
 }
