@@ -89,7 +89,7 @@ Color Renderer::getRayColor(const Ray &ray, int depth,
   }
 
   if (HitRecord rec; scene.hit(ray, 0.001, INFINITY, rec)) {
-    Vec3 direction = Vec3::randomOnHemisphere(rec.normal);
+    Vec3 direction = rec.normal + Vec3::randomUnit();
     return 0.5 * getRayColor(Ray(rec.p, direction), depth - 1, scene);
   }
 
