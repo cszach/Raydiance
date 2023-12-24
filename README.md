@@ -18,8 +18,7 @@ At the moment, I see two primary goals for this project:
 
 ## Current status
 
-Basic ray collision with spheres. A test scene is made with one sphere. Output
-image is shown below; colors are based on the sphere's normals.
+Ray collision with lambertian spheres is implemented.
 
 [![Current output image.](image.png)](image.ppm)
 
@@ -27,8 +26,8 @@ image is shown below; colors are based on the sphere's normals.
 
 Requirements:
 
-- CMake version 3.0+
-- GCC (will add support for other compilers in the future)
+-   CMake version 3.5+
+-   GCC (will add support for other compilers in the future)
 
 ```
 cmake -B build .
