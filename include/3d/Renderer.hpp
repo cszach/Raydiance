@@ -12,7 +12,6 @@ private:
   Camera &_camera;
   int _output_width;
   int _output_height;
-  int _num_samples = 10;
 
   int _num_pixels;
   std::vector<float> _frame_buffer;
@@ -25,6 +24,9 @@ private:
   static const Interval intensity;
 
 public:
+  int num_samples = 10;
+  int num_bounces = 10;
+
   Renderer(Camera &camera, int output_width, int output_height);
 
   Camera &getCamera() const;
@@ -42,7 +44,7 @@ public:
 private:
   Ray getRay(int i, int j) const;
   Point3 getPixelSampleSquare() const;
-  Color getRayColor(const Ray &ray, const Scene &scene) const;
+  Color getRayColor(const Ray &ray, int depth, const Scene &scene) const;
 };
 
 const Interval Renderer::intensity(0.0, 0.999);
