@@ -8,9 +8,9 @@ Sphere::Sphere(double radius) : _radius(radius) {}
 bool Sphere::hit(const Ray &ray, double t_min, double t_max,
                  HitRecord &rec) const {
   Vec3 o_c = ray.getOrigin() - getPosition(); // ray origin - sphere position
-  double a = dotProduct(ray.getDirection(), ray.getDirection());
-  double half_b = dotProduct(ray.getDirection(), o_c);
-  double c = dotProduct(o_c, o_c) - _radius * _radius;
+  double a = ray.getDirection().dot(ray.getDirection());
+  double half_b = ray.getDirection().dot(o_c);
+  double c = o_c.dot(o_c) - _radius * _radius;
 
   double discriminant = half_b * half_b - a * c;
 
