@@ -15,17 +15,15 @@ protected:
 };
 
 TEST_F(Vec3Test, GettersAndSetters) {
-  EXPECT_EQ(u.getX(), 0);
-  EXPECT_EQ(u.getY(), 1);
-  EXPECT_EQ(u.getZ(), 2);
+  EXPECT_EQ(u.x, 0);
+  EXPECT_EQ(u.y, 1);
+  EXPECT_EQ(u.z, 2);
 
-  u.setX(3);
-  u.setY(4);
-  u.setZ(5);
+  u.set(3, 4, 5);
 
-  EXPECT_EQ(u.getX(), 3);
-  EXPECT_EQ(u.getY(), 4);
-  EXPECT_EQ(u.getZ(), 5);
+  EXPECT_EQ(u.x, 3);
+  EXPECT_EQ(u.y, 4);
+  EXPECT_EQ(u.z, 5);
 }
 
 TEST_F(Vec3Test, BasicOperators) {
@@ -52,6 +50,13 @@ TEST_F(Vec3Test, BasicOperators) {
   EXPECT_TRUE(v.equals(Vec3(3, 4, 5)));
 }
 
+TEST_F(Vec3Test, Normalization) {
+  EXPECT_TRUE(
+      u.normalize().equals(Vec3(0 / sqrt(5), 1 / sqrt(5), 2 / sqrt(5))));
+  EXPECT_TRUE(
+      v.normalize().equals(Vec3(3 / sqrt(50), 4 / sqrt(50), 5 / sqrt(50))));
+}
+
 TEST_F(Vec3Test, Utilities) {
   EXPECT_TRUE((u + v).equals(Vec3(3, 5, 7)));
   EXPECT_TRUE((u - v).equals(Vec3(-3, -3, -3)));
@@ -59,10 +64,10 @@ TEST_F(Vec3Test, Utilities) {
   EXPECT_TRUE((u / 1).equals(Vec3(0, 1, 2)));
   EXPECT_TRUE((u / 2).equals(Vec3(0, 0.5, 1)));
 
-  EXPECT_EQ(dotProduct(u, v), 14);
-  EXPECT_TRUE(crossProduct(u, v).equals(Vec3(-3, 6, -3)));
+  EXPECT_EQ(u.dot(v), 14);
+  EXPECT_TRUE(u.cross(v).equals(Vec3(-3, 6, -3)));
 
-  EXPECT_TRUE(unitVectorFrom(u).equals(Vec3(0, 1, 2) / sqrt(5)));
+  EXPECT_TRUE(u.normalize().equals(Vec3(0, 1, 2) / sqrt(5)));
 
   // immutability
 
