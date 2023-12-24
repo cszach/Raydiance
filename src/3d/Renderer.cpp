@@ -51,17 +51,23 @@ void Renderer::render(const Scene &scene) {
 
       pixel_color /= num_samples;
 
-      auto r = static_cast<float>(intensity.clamp(pixel_color.x));
-      auto g = static_cast<float>(intensity.clamp(pixel_color.y));
-      auto b = static_cast<float>(intensity.clamp(pixel_color.z));
+      auto r = pixel_color.x;
+      auto g = pixel_color.y;
+      auto b = pixel_color.z;
+
+      // Apply linear to gamma transform
+
+      r = pow(r, 0.4545);
+      g = pow(g, 0.4545);
+      b = pow(b, 0.4545);
 
       //  Write color
 
       int pixel_index = 3 * (i + j * _output_width);
 
-      _frame_buffer[pixel_index] = r;
-      _frame_buffer[pixel_index + 1] = g;
-      _frame_buffer[pixel_index + 2] = b;
+      _frame_buffer[pixel_index] = static_cast<float>(intensity.clamp(r));
+      _frame_buffer[pixel_index + 1] = static_cast<float>(intensity.clamp(g));
+      _frame_buffer[pixel_index + 2] = static_cast<float>(intensity.clamp(b));
     }
   }
 }
