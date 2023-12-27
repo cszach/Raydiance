@@ -37,7 +37,7 @@ target_include_directories(
     ${CMAKE_SOURCE_DIR}/include/math
     ${CMAKE_SOURCE_DIR}/include/3d
     ${CMAKE_SOURCE_DIR}/include/cuda
-    /usr/local/cuda-12.3/targets/x86_64-linux/include
+    /usr/local/cuda-12.2/targets/x86_64-linux/include
 )
 
 set_target_properties(raydiance PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
