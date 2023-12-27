@@ -6,21 +6,17 @@
 
 #include "Object.hpp"
 
-using std::shared_ptr;
-
 class Scene : public Object {
 public:
-  Scene();
+  Object **_objects;
+  int _num_objects = 0;
 
-  void clear();
+  __device__ Scene(Object **objects, int num_objects);
 
-  void add(shared_ptr<Object> object);
+  // __device__ void add(Object *object);
 
-  bool hit(const Ray &ray, double t_min, double t_max,
-           HitRecord &rec) const override;
-
-private:
-  std::vector<shared_ptr<Object>> objects;
+  __device__ bool hit(const Ray &ray, float t_min, float t_max,
+                      HitRecord &rec) const override;
 };
 
 #endif // SCENE_H

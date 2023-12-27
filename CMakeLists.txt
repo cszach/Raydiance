@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 cmake_policy(SET CMP0135 NEW)
 
-project(Raydiance)
+project(Raydiance LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -9,31 +9,38 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -g -G")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Library
 
 set(LIBRARY_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
 set(LIBRARY_SOURCES
-    ${LIBRARY_SOURCE_DIR}/3d/Camera.cpp
-    ${LIBRARY_SOURCE_DIR}/3d/Object.cpp
-    ${LIBRARY_SOURCE_DIR}/3d/Renderer.cpp
-    ${LIBRARY_SOURCE_DIR}/3d/Scene.cpp
-    ${LIBRARY_SOURCE_DIR}/3d/Sphere.cpp
+    ${LIBRARY_SOURCE_DIR}/3d/Camera.cu
+    ${LIBRARY_SOURCE_DIR}/3d/Object.cu
+    ${LIBRARY_SOURCE_DIR}/3d/Renderer.cu
+    ${LIBRARY_SOURCE_DIR}/3d/Scene.cu
+    ${LIBRARY_SOURCE_DIR}/3d/Sphere.cu
 
-    ${LIBRARY_SOURCE_DIR}/math/Ray.cpp
-    ${LIBRARY_SOURCE_DIR}/math/Vec3.cpp
+    ${LIBRARY_SOURCE_DIR}/math/Ray.cu
+    ${LIBRARY_SOURCE_DIR}/math/Vec3.cu
+
+    ${LIBRARY_SOURCE_DIR}/cuda/cuda_helper.cu
 )
 
-add_library(raydiance SHARED ${LIBRARY_SOURCES})
+add_library(raydiance STATIC ${LIBRARY_SOURCES})
 target_include_directories(
     raydiance
     PUBLIC
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/include/math
     ${CMAKE_SOURCE_DIR}/include/3d
+    ${CMAKE_SOURCE_DIR}/include/cuda
+    /usr/local/cuda-12.3/targets/x86_64-linux/include
 )
+
+set_target_properties(raydiance PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
 
 install(
     TARGETS raydiance
@@ -43,8 +50,10 @@ install(
 
 # Executable
 
-add_executable(demo src/main.cpp)
+add_executable(demo src/main.cu)
 target_link_libraries(demo PUBLIC raydiance)
+
+set_target_properties(demo PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
 
 # Google Test setup
 
@@ -70,6 +79,8 @@ target_link_libraries(
     raydiance
     GTest::gtest_main
 )
+
+set_target_properties(raydiance_test PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
 
 include(GoogleTest)
 gtest_discover_tests(raydiance_test)
