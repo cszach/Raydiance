@@ -28,9 +28,9 @@ TEST_F(Vec3Test, GettersAndSetters) {
 
 TEST_F(Vec3Test, BasicOperators) {
   EXPECT_EQ(u.lengthSquared(), 5);
-  EXPECT_EQ(u.length(), sqrt(5));
+  EXPECT_EQ(u.length(), sqrt(5.0f));
   EXPECT_EQ(v.lengthSquared(), 50);
-  EXPECT_EQ(v.length(), sqrt(50));
+  EXPECT_EQ(v.length(), sqrt(50.0f));
 
   EXPECT_TRUE(u.equals(Vec3(0, 1, 2)));
   EXPECT_FALSE(u.equals(v));
