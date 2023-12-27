@@ -5,82 +5,80 @@
 
 #include "MathUtils.hpp"
 
+#define RANDVEC3                                                               \
+  Vec3(curand_uniform(local_rand_state), curand_uniform(local_rand_state),     \
+       curand_uniform(local_rand_state))
+
 class Vec3 {
 public:
-  double x;
-  double y;
-  double z;
+  float x;
+  float y;
+  float z;
 
-  Vec3();
-  Vec3(double x, double y, double z);
+  __host__ __device__ Vec3();
+  __host__ __device__ Vec3(float x, float y, float z);
 
-  void set(double x, double y, double z);
+  __host__ __device__ void set(float x, float y, float z);
 
-  double length() const;
-  double lengthSquared() const;
-  bool equals(const Vec3 &v) const;
+  __host__ __device__ float length() const;
+  __host__ __device__ float lengthSquared() const;
+  __host__ __device__ bool equals(const Vec3 &v) const;
 
-  static Vec3 random() {
-    return Vec3(random_double(), random_double(), random_double());
-  }
+  __host__ __device__ Vec3 operator-() const;
+  __host__ __device__ Vec3 &operator+=(const Vec3 &v);
+  __host__ __device__ Vec3 &operator-=(const Vec3 &v);
+  __host__ __device__ Vec3 &operator*=(const Vec3 &v);
+  __host__ __device__ Vec3 &operator/=(const float t);
 
-  static Vec3 random(double min, double max) {
-    return Vec3(random_double(min, max), random_double(min, max),
-                random_double(min, max));
-  }
+  __host__ __device__ Vec3 normalize() const;
+  __host__ __device__ float dot(const Vec3 &v) const;
+  __host__ __device__ Vec3 cross(const Vec3 &v) const;
 
-  Vec3 operator-() const;
-  Vec3 &operator+=(const Vec3 &v);
-  Vec3 &operator-=(const Vec3 &v);
-  Vec3 &operator*=(const Vec3 &v);
-  Vec3 &operator/=(const double t);
-
-  Vec3 normalize() const;
-  double dot(const Vec3 &v) const;
-  Vec3 cross(const Vec3 &v) const;
-
-  static Vec3 randomInUnitSphere();
-  static Vec3 randomUnit();
-  static Vec3 randomOnHemisphere(const Vec3 &normal);
+  __device__ static Vec3 randomInUnitSphere(curandState *local_rand_state);
+  __device__ static Vec3 randomUnit(curandState *local_rand_state);
 };
 
-inline Vec3 operator+(const Vec3 &u, const Vec3 &v) {
+__host__ __device__ inline Vec3 operator+(const Vec3 &u, const Vec3 &v) {
   return Vec3(u.x + v.x, u.y + v.y, u.z + v.z);
 }
 
-inline Vec3 operator-(const Vec3 &u, const Vec3 &v) {
+__host__ __device__ inline Vec3 operator-(const Vec3 &u, const Vec3 &v) {
   return Vec3(u.x - v.x, u.y - v.y, u.z - v.z);
 }
 
-inline Vec3 operator*(const Vec3 &u, const Vec3 &v) {
+__host__ __device__ inline Vec3 operator*(const Vec3 &u, const Vec3 &v) {
   return Vec3(u.x * v.x, u.y * v.y, u.z * v.z);
 }
 
-inline Vec3 operator*(const Vec3 &v, const double t) {
+__host__ __device__ inline Vec3 operator*(const Vec3 &v, const float t) {
   return Vec3(v.x * t, v.y * t, v.z * t);
 }
 
-inline Vec3 operator*(const double t, const Vec3 &v) { return v * t; }
+__host__ __device__ inline Vec3 operator*(const float t, const Vec3 &v) {
+  return v * t;
+}
 
-inline Vec3 operator/(const Vec3 &v, const double t) { return v * (1 / t); }
+__host__ __device__ inline Vec3 operator/(const Vec3 &v, const float t) {
+  return v * (1 / t);
+}
 
-inline Vec3 Vec3::normalize() const {
-  double l = length();
+__host__ __device__ inline Vec3 Vec3::normalize() const {
+  float l = length();
 
   return Vec3(x / l, y / l, z / l);
 }
 
-inline double Vec3::dot(const Vec3 &v) const {
+__host__ __device__ inline float Vec3::dot(const Vec3 &v) const {
   return x * v.x + y * v.y + z * v.z;
 }
 
-inline Vec3 Vec3::cross(const Vec3 &v) const {
+__host__ __device__ inline Vec3 Vec3::cross(const Vec3 &v) const {
   return Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
-inline Vec3 Vec3::randomInUnitSphere() {
+__device__ inline Vec3 Vec3::randomInUnitSphere(curandState *local_rand_state) {
   while (true) {
-    auto v = Vec3::random(-1, 1);
+    auto v = 2.0f * RANDVEC3 - Vec3(1, 1, 1);
 
     if (v.lengthSquared() < 1) {
       return v;
@@ -88,12 +86,8 @@ inline Vec3 Vec3::randomInUnitSphere() {
   }
 }
 
-inline Vec3 Vec3::randomUnit() { return randomInUnitSphere().normalize(); }
-
-inline Vec3 Vec3::randomOnHemisphere(const Vec3 &normal) {
-  Vec3 v = randomUnit();
-
-  return v.dot(normal) > 0 ? v : -v;
+__device__ inline Vec3 Vec3::randomUnit(curandState *local_rand_state) {
+  return randomInUnitSphere(local_rand_state).normalize();
 }
 
 using Point3 = Vec3;

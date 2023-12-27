@@ -1,6 +1,8 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <curand_kernel.h>
+
 #include "Camera.hpp"
 #include "Interval.hpp"
 #include "Ray.hpp"
@@ -9,44 +11,38 @@
 
 class Renderer {
 private:
-  Camera &_camera;
-  int _output_width;
-  int _output_height;
+  Camera **_camera;
 
   int _num_pixels;
-  std::vector<float> _frame_buffer;
+  size_t _frame_buffer_size;
 
   Point3 _pixel00;
   Vec3 _pixel_delta_u;
   Vec3 _pixel_delta_v;
   Point3 _center;
 
-  static const Interval intensity;
-
 public:
+  // static const Interval intensity;
+  int output_width;
+  int output_height;
   int num_samples = 10;
   int num_bounces = 10;
 
-  Renderer(Camera &camera, int output_width, int output_height);
+  __device__ Renderer(Camera **camera, int output_width, int output_height);
 
-  Camera &getCamera() const;
-  int getOutputWidth() const;
-  int getOutputHeight() const;
-  int getNumSamples() const;
-  const std::vector<float> &getFrameBuffer() const;
+  __device__ Camera **getCamera() const;
 
-  void setCamera(const Camera &camera);
-  void setOutputSize(int output_width, int output_height);
-  void setNumSamples(int num_samples);
+  __device__ void setCamera(Camera **camera);
 
-  void render(const Scene &scene);
-
-private:
-  Ray getRay(int i, int j) const;
-  Point3 getPixelSampleSquare() const;
-  Color getRayColor(const Ray &ray, int depth, const Scene &scene) const;
+  __device__ Ray getRay(int i, int j, curandState *rand_state) const;
+  __device__ Point3 getPixelSampleSquare(curandState *rand_state) const;
+  __device__ Color getRayColor(const Ray &ray, Object **scene, int num_bounces,
+                               curandState *local_rand_state) const;
 };
 
-const Interval Renderer::intensity(0.0, 0.999);
+// const Interval Renderer::intensity(0.0, 0.999);
+
+__global__ void render(Object **scene, Renderer **renderer, float *fb,
+                       curandState *rand_state);
 
 #endif // RENDERER_H

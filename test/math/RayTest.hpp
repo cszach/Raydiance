@@ -15,11 +15,11 @@ protected:
 };
 
 TEST_F(RayTest, GettersAndSetters) {
-  EXPECT_TRUE(default_ray.getOrigin().equals(Point3(0, 0, 0)));
-  EXPECT_TRUE(default_ray.getDirection().equals(Vec3(0, 0, -1)));
+  EXPECT_TRUE(default_ray.origin.equals(Point3(0, 0, 0)));
+  EXPECT_TRUE(default_ray.direction.equals(Vec3(0, 0, -1)));
 
-  EXPECT_TRUE(r.getOrigin().equals(Point3(0, 1, 2)));
-  EXPECT_TRUE(r.getDirection().equals(Vec3(3, 4, 5)));
+  EXPECT_TRUE(r.origin.equals(Point3(0, 1, 2)));
+  EXPECT_TRUE(r.direction.equals(Vec3(3, 4, 5)));
 }
 
 TEST_F(RayTest, At) {

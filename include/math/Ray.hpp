@@ -4,18 +4,14 @@
 #include "Vec3.hpp"
 
 class Ray {
-private:
+public:
   Point3 origin;
   Vec3 direction;
 
-public:
-  Ray();
-  Ray(const Point3 &origin, const Vec3 &direction);
+  __device__ Ray();
+  __device__ Ray(const Point3 &origin, const Vec3 &direction);
 
-  Point3 getOrigin() const;
-  Vec3 getDirection() const;
-
-  Point3 at(double t) const;
+  __device__ Point3 at(float t) const;
 };
 
 #endif // RAY_H

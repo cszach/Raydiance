@@ -1,15 +1,15 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
+#include <curand_kernel.h>
 #include <limits>
-#include <random>
 
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
+const float infinity = std::numeric_limits<float>::infinity();
+const float pi = 3.1415926535897932385;
 
-inline double degToRad(double deg) { return deg * pi / 180.0; }
+__device__ inline float degToRad(float deg) { return deg * pi / 180.0; }
 
-inline double clamp(double value, double min, double max) {
+__device__ inline float clamp(float value, float min, float max) {
   if (value < min)
     return min;
   if (value > max)
@@ -17,18 +17,13 @@ inline double clamp(double value, double min, double max) {
   return value;
 }
 
-inline double random_double() {
-  static std::uniform_real_distribution distribution(0.0, 1.0);
-  static std::mt19937 generator;
-
-  return distribution(generator);
+__device__ inline float random_float(curandState *local_rand_state) {
+  return curand_uniform(local_rand_state);
 }
 
-inline double random_double(double min, double max) {
-  static std::uniform_real_distribution distribution(min, max);
-  static std::mt19937 generator;
-
-  return distribution(generator);
+__device__ inline float random_float(float min, float max,
+                                     curandState *local_rand_state) {
+  return min + (max - min) * random_float(local_rand_state);
 }
 
 #endif // MATH_UTILS_H

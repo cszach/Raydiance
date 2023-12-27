@@ -7,38 +7,38 @@
 
 class Camera : public Object {
 private:
-  double _vertical_fov;
-  double _aspect_ratio;
+  float _vertical_fov;
+  float _aspect_ratio;
 
-  double _focal_length = 1.0;
+  float _focal_length = 1.0f;
   Point3 _position = Point3(0, 0, 0);
 
-  double _theta;
-  double _h;
-  double _viewport_height;
+  float _theta;
+  float _h;
+  float _viewport_height;
   Vec3 _viewport_u;
   Vec3 _viewport_v;
   Point3 _viewport_upper_left;
 
 public:
-  Camera(double vertical_fov, double aspect_ratio);
-  Camera();
+  __device__ Camera(float vertical_fov, float aspect_ratio);
 
-  double getVerticalFOV() const;
-  double getAspectRatio() const;
-  double getFocalLength() const;
-  Vec3 getViewportU() const;
-  Vec3 getViewportV() const;
-  Point3 getViewportUpperLeft() const;
+  __device__ float getVerticalFOV() const;
+  __device__ float getAspectRatio() const;
+  __device__ float getFocalLength() const;
+  __device__ Vec3 getViewportU() const;
+  __device__ Vec3 getViewportV() const;
+  __device__ Point3 getViewportUpperLeft() const;
 
-  void setVerticalFov(double vertical_fov);
-  void setAspectRatio(double aspect_ratio);
-  void setFocalLength(double focal_length);
-  bool hit(const Ray &ray, double t_min, double t_max,
-           HitRecord &rec) const override;
+  __device__ void setVerticalFov(float vertical_fov);
+  __device__ void setAspectRatio(float aspect_ratio);
+  __device__ void setFocalLength(float focal_length);
+
+  __device__ bool hit(const Ray &ray, float t_min, float t_max,
+                      HitRecord &rec) const override;
 
 private:
-  void computerViewportUpperLeft();
+  __device__ void computerViewportUpperLeft();
 };
 
 #endif // CAMERA_H
