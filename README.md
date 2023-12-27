@@ -4,7 +4,7 @@
 
 [blog]: https://cszach.github.io/Raydiance/
 
-This is hopefully will be my long-term ray tracing software project. I will keep
+This hopefully will be my long-term ray tracing software project. I will keep
 adding features to the ray tracer as I learn and discover ray tracing
 techniques.
 
@@ -18,7 +18,8 @@ At the moment, I see two primary goals for this project:
 
 ## Current status
 
-Ray collision with lambertian spheres is implemented.
+Ray collision with lambertian spheres is implemented. Accelerated using CUDA,
+super fast now! Render time went from 2 minutes to 2 seconds. 🏃
 
 [![Current output image.](image.png)](image.ppm)
 
@@ -28,6 +29,10 @@ Requirements:
 
 -   CMake version 3.5+
 -   GCC (will add support for other compilers in the future)
+-   The CUDA Toolkit
+
+> **Note**: Replace the CUDA include path in `CMakeLists.txt` with where
+> `<curand_kernel.h>` is on your system.
 
 ```
 cmake -B build .
