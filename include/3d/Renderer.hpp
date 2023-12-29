@@ -36,13 +36,13 @@ public:
 
   __device__ Ray getRay(int i, int j, curandState *rand_state) const;
   __device__ Point3 getPixelSampleSquare(curandState *rand_state) const;
-  __device__ Color getRayColor(const Ray &ray, Object **scene, int num_bounces,
+  __device__ Color getRayColor(const Ray &ray, Scene **scene, int num_bounces,
                                curandState *local_rand_state) const;
 };
 
 // const Interval Renderer::intensity(0.0, 0.999);
 
-__global__ void render(Object **scene, Renderer **renderer, float *fb,
+__global__ void render(Scene **scene, Renderer **renderer, float *fb,
                        curandState *rand_state);
 
 #endif // RENDERER_H

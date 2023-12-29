@@ -28,7 +28,7 @@ __device__ void Renderer::setCamera(Camera **camera) {
   _center = (*camera)->getPosition();
 }
 
-__global__ void render(Object **scene, Renderer **renderer, float *fb,
+__global__ void render(Scene **scene, Renderer **renderer, float *fb,
                        curandState *rand_state) {
   int i = threadIdx.x + blockIdx.x * blockDim.x;
   int j = threadIdx.y + blockIdx.y * blockDim.y;
@@ -89,7 +89,7 @@ Renderer::getPixelSampleSquare(curandState *local_rand_state) const {
   return x * _pixel_delta_u + y * _pixel_delta_v;
 }
 
-__device__ Color Renderer::getRayColor(const Ray &ray, Object **scene,
+__device__ Color Renderer::getRayColor(const Ray &ray, Scene **scene,
                                        int num_bounces,
                                        curandState *local_rand_state) const {
   Ray r = ray;
