@@ -9,7 +9,7 @@
 #include "Sphere.hpp"
 #include "cuda_helper.hpp"
 
-__global__ void setup(Object **d_objects, Object **d_scene, Camera **d_camera,
+__global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
                       Renderer **d_renderer, int image_width, int image_height,
                       float vertical_fov, float aspect_ratio) {
   if (threadIdx.x == 0 && blockIdx.x == 0) {
@@ -66,8 +66,8 @@ int main() {
   checkCudaError(
       cudaMalloc((void **)&d_objects, NUM_OBJECTS * sizeof(Object *)));
 
-  Object **d_scene;
-  checkCudaError(cudaMalloc((void **)&d_scene, sizeof(Object *)));
+  Scene **d_scene;
+  checkCudaError(cudaMalloc((void **)&d_scene, sizeof(Scene *)));
 
   // Render
 
