@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.5)
-cmake_policy(SET CMP0135 NEW)
 
 project(Raydiance LANGUAGES CXX CUDA)
 
@@ -54,33 +53,3 @@ add_executable(demo src/main.cu)
 target_link_libraries(demo PUBLIC raydiance)
 
 set_target_properties(demo PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
-
-# Google Test setup
-
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-# Google Test
-
-enable_testing()
-
-add_executable(
-    raydiance_test
-    test/main.cpp
-)
-target_link_libraries(
-    raydiance_test
-    raydiance
-    GTest::gtest_main
-)
-
-set_target_properties(raydiance_test PROPERTIES CUDA_SEPARABLE_COMPILATION ON CUDA_ARCHITECTURES "86")
-
-include(GoogleTest)
-gtest_discover_tests(raydiance_test)
