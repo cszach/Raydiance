@@ -1,5 +1,5 @@
-#include "Scene.hpp"
-#include "cuda_helper.hpp"
+#include "Scene.cuh"
+#include "cuda_helper.cuh"
 
 __device__ Scene::Scene(Object **objects, int num_objects)
     : _objects(objects), _num_objects(num_objects) {}

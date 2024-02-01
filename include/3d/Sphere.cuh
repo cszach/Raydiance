@@ -1,8 +1,8 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "Object.hpp"
-#include "Vec3.hpp"
+#include "Object.cuh"
+#include "Vec3.cuh"
 
 class Sphere : public Object {
 private:

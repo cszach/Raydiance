@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "Object.hpp"
+#include "Object.cuh"
 
 class Scene : public Object {
 public:

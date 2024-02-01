@@ -1,4 +1,4 @@
-#include "Vec3.hpp"
+#include "Vec3.cuh"
 
 #include <cmath>
 

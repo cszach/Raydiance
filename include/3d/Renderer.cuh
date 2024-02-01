@@ -3,11 +3,11 @@
 
 #include <curand_kernel.h>
 
-#include "Camera.hpp"
-#include "Interval.hpp"
-#include "Ray.hpp"
-#include "Scene.hpp"
-#include "Vec3.hpp"
+#include "Camera.cuh"
+#include "Interval.cuh"
+#include "Ray.cuh"
+#include "Scene.cuh"
+#include "Vec3.cuh"
 
 class DRenderer {
 private:

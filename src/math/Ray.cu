@@ -1,4 +1,4 @@
-#include "Ray.hpp"
+#include "Ray.cuh"
 
 __device__ Ray::Ray() : origin(Point3(0, 0, 0)), direction(Vec3(0, 0, -1)) {}
 __device__ Ray::Ray(const Point3 &origin, const Vec3 &direction)

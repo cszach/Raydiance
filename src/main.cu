@@ -4,10 +4,10 @@
 #include <memory>
 #include <stdio.h>
 
-#include "Renderer.hpp"
-#include "Scene.hpp"
-#include "Sphere.hpp"
-#include "cuda_helper.hpp"
+#include "Renderer.cuh"
+#include "Scene.cuh"
+#include "Sphere.cuh"
+#include "cuda_helper.cuh"
 
 __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
                       float vertical_fov, float aspect_ratio) {

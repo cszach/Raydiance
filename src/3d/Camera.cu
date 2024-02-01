@@ -1,7 +1,7 @@
 #include <cmath>
 
-#include "Camera.hpp"
-#include "MathUtils.hpp"
+#include "Camera.cuh"
+#include "MathUtils.cuh"
 
 __device__ Camera::Camera(float vertical_fov, float aspect_ratio) {
   setVerticalFov(vertical_fov);

@@ -3,8 +3,8 @@
 
 #include <memory>
 
-#include "Ray.hpp"
-#include "Vec3.hpp"
+#include "Ray.cuh"
+#include "Vec3.cuh"
 
 struct HitRecord {
   float t;
