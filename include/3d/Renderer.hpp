@@ -9,12 +9,12 @@
 #include "Scene.hpp"
 #include "Vec3.hpp"
 
-class Renderer {
+class DRenderer {
 private:
   Camera **_camera;
 
   int _num_pixels;
-  size_t _frame_buffer_size;
+  size_t _fb_size;
 
   Point3 _pixel00;
   Vec3 _pixel_delta_u;
@@ -27,8 +27,9 @@ public:
   int output_height;
   int num_samples = 10;
   int num_bounces = 10;
+  // float *fb;
 
-  __device__ Renderer(Camera **camera, int output_width, int output_height);
+  __device__ DRenderer(Camera **camera, int output_width, int output_height);
 
   __device__ Camera **getCamera() const;
 
@@ -40,9 +41,20 @@ public:
                                curandState *local_rand_state) const;
 };
 
-// const Interval Renderer::intensity(0.0, 0.999);
+class Renderer {
+public:
+  int output_width;
+  int output_height;
 
-__global__ void render(Scene **scene, Renderer **renderer, float *fb,
-                       curandState *rand_state);
+  // TODO: Consider making these private
+  DRenderer **d_renderer;
+  size_t fb_size;
+  float *fb;
+
+  __host__ Renderer(Camera **d_camera, int output_width, int output_height);
+  __host__ void render(Scene **scene, curandState *d_rand_state);
+};
+
+// const Interval Renderer::intensity(0.0, 0.999);
 
 #endif // RENDERER_H

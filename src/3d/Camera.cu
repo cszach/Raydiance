@@ -11,9 +11,9 @@ __device__ Camera::Camera(float vertical_fov, float aspect_ratio) {
 __device__ float Camera::getVerticalFOV() const { return _vertical_fov; }
 __device__ float Camera::getAspectRatio() const { return _aspect_ratio; }
 __device__ float Camera::getFocalLength() const { return _focal_length; }
-__device__ Point3 Camera::getViewportU() const { return _viewport_u; }
-__device__ Point3 Camera::getViewportV() const { return _viewport_v; }
-__device__ Point3 Camera::getViewportUpperLeft() const {
+__host__ __device__ Point3 Camera::getViewportU() const { return _viewport_u; }
+__host__ __device__ Point3 Camera::getViewportV() const { return _viewport_v; }
+__host__ __device__ Point3 Camera::getViewportUpperLeft() const {
   return _viewport_upper_left;
 }
 

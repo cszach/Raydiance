@@ -26,9 +26,9 @@ public:
   __device__ float getVerticalFOV() const;
   __device__ float getAspectRatio() const;
   __device__ float getFocalLength() const;
-  __device__ Vec3 getViewportU() const;
-  __device__ Vec3 getViewportV() const;
-  __device__ Point3 getViewportUpperLeft() const;
+  __host__ __device__ Vec3 getViewportU() const;
+  __host__ __device__ Vec3 getViewportV() const;
+  __host__ __device__ Point3 getViewportUpperLeft() const;
 
   __device__ void setVerticalFov(float vertical_fov);
   __device__ void setAspectRatio(float aspect_ratio);
