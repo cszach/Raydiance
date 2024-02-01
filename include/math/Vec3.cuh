@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include "MathUtils.hpp"
+#include "MathUtils.cuh"
 
 #define RANDVEC3                                                               \
   Vec3(curand_uniform(local_rand_state), curand_uniform(local_rand_state),     \

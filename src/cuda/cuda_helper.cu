@@ -1,4 +1,4 @@
-#include "cuda_helper.hpp"
+#include "cuda_helper.cuh"
 #include <iostream>
 
 void checkCuda(cudaError_t result, char const *const function_name,

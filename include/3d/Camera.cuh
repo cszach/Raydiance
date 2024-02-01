@@ -1,9 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Object.hpp"
-#include "Ray.hpp"
-#include "Vec3.hpp"
+#include "Object.cuh"
+#include "Ray.cuh"
+#include "Vec3.cuh"
 
 class Camera : public Object {
 private:

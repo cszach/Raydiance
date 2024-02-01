@@ -1,9 +1,9 @@
 #include <curand_kernel.h>
 // #include <iostream>
 
-#include "MathUtils.hpp"
-#include "Renderer.hpp"
-#include "cuda_helper.hpp"
+#include "MathUtils.cuh"
+#include "Renderer.cuh"
+#include "cuda_helper.cuh"
 
 __global__ void p_render(Scene **scene, DRenderer **renderer, float *fb,
                          curandState *rand_state);

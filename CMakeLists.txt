@@ -32,10 +32,9 @@ add_library(raydiance STATIC ${LIBRARY_SOURCES})
 target_include_directories(
     raydiance
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/include/math
     ${CMAKE_SOURCE_DIR}/include/3d
     ${CMAKE_SOURCE_DIR}/include/cuda
+    ${CMAKE_SOURCE_DIR}/include/math
     /usr/local/cuda-12.2/targets/x86_64-linux/include
 )
 

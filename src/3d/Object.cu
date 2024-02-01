@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "Object.hpp"
+#include "Object.cuh"
 
 __device__ Object::Object() = default;
 

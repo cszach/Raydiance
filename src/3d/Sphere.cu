@@ -1,7 +1,7 @@
-#include "Sphere.hpp"
+#include "Sphere.cuh"
 
-#include "Ray.hpp"
-#include "Vec3.hpp"
+#include "Ray.cuh"
+#include "Vec3.cuh"
 
 __device__ Sphere::Sphere(float radius) : _radius(radius) {}
 
