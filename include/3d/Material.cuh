@@ -47,10 +47,18 @@ public:
 
 class Dielectric : public Material {
 private:
-  float indexOfRefraction;
+  float refractionIndex;
+
+  __device__ static float reflectance(float cosine, float refractionIndex) {
+    // Schlick's approximation
+    float r0 = (1.0f - refractionIndex) / (1.0f + refractionIndex);
+    r0 = r0 * r0;
+
+    return r0 + (1.0f - r0) * pow((1.0f - cosine), 5);
+  }
 
 public:
-  __device__ Dielectric(double _indexOfRefraction);
+  __device__ Dielectric(double _refractionIndex);
 
   __device__ bool scatter(const Ray &rayIn, const HitRecord &record,
                           Color &attenuation, Ray &scattered,

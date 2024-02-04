@@ -54,15 +54,15 @@ __device__ bool Metal::scatter(const Ray &rayIn, const HitRecord &record,
 
 // dielectric
 
-__device__ Dielectric::Dielectric(double _indexOfRefraction)
-    : indexOfRefraction(_indexOfRefraction) {}
+__device__ Dielectric::Dielectric(double _refractionIndex)
+    : refractionIndex(_refractionIndex) {}
 
 __device__ bool Dielectric::scatter(const Ray &rayIn, const HitRecord &record,
                                     Color &attenuation, Ray &scattered,
                                     curandState *localRandState) const {
   attenuation = Color(1.0, 1.0, 1.0);
   float refractionRatio =
-      record.front_face ? (1.0 / indexOfRefraction) : indexOfRefraction;
+      record.front_face ? (1.0 / refractionIndex) : refractionIndex;
 
   Vec3 unitDirection = rayIn.direction.normalize();
   float cosTheta = fmin(-unitDirection.dot(record.normal), 1.0f);
@@ -71,7 +71,8 @@ __device__ bool Dielectric::scatter(const Ray &rayIn, const HitRecord &record,
   bool cannotRefract = refractionRatio * sinTheta > 1.0f;
   Vec3 direction;
 
-  if (cannotRefract) { // must reflect
+  if (cannotRefract || reflectance(cosTheta, refractionRatio) >
+                           curand_uniform(localRandState)) { // must reflect
     direction = reflect(unitDirection, record.normal);
   } else {
     direction = refract(unitDirection, record.normal, refractionRatio);
