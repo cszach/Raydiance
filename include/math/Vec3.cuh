@@ -23,6 +23,7 @@ public:
   __device__ float length() const;
   __device__ float lengthSquared() const;
   __device__ bool equals(const Vec3 &v) const;
+  __device__ bool isNearZero() const;
 
   __device__ Vec3 operator-() const;
   __device__ Vec3 &operator+=(const Vec3 &v);

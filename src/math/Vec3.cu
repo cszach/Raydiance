@@ -16,6 +16,10 @@ __device__ float Vec3::lengthSquared() const { return x * x + y * y + z * z; }
 __device__ bool Vec3::equals(const Vec3 &v) const {
   return x == v.x && y == v.y && z == v.z;
 }
+__device__ bool Vec3::isNearZero() const {
+  auto epsilon = 1e-8;
+  return fabs(x) < epsilon && fabs(y) < epsilon && fabs(z) < epsilon;
+}
 
 __device__ Vec3 Vec3::operator-() const { return Vec3(-x, -y, -z); }
 

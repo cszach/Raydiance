@@ -1,8 +1,10 @@
 #include <curand_kernel.h>
 // #include <iostream>
 
+#include "Material.cuh"
 #include "MathUtils.cuh"
 #include "Renderer.cuh"
+#include "Scene.cuh"
 #include "cuda_helper.cuh"
 
 __global__ void p_render(Scene **scene, DRenderer **renderer, float *fb,
@@ -137,22 +139,28 @@ __device__ Color DRenderer::getRayColor(const Ray &ray, Scene **scene,
                                         int num_bounces,
                                         curandState *local_rand_state) const {
   Ray r = ray;
-  float attenuation = 1.0f;
+  Color currentAttenuation(1.0, 1.0, 1.0);
 
   for (int i = 0; i < num_bounces; ++i) {
     HitRecord rec;
 
-    if ((*scene)->hit(r, 0.001, INFINITY, rec)) {
-      Vec3 direction = rec.normal + Vec3::randomUnit(local_rand_state);
+    if ((*scene)->hit(r, 0.001f, INFINITY, rec)) {
+      Ray scattered;
+      Color attenuation;
 
-      attenuation *= 0.5;
-      r = Ray(rec.p, direction);
+      if (rec.material->scatter(r, rec, attenuation, scattered,
+                                local_rand_state)) {
+        currentAttenuation *= attenuation;
+        r = scattered;
+      } else {
+        return Vec3(0.0, 0.0, 0.0);
+      }
     } else {
       Vec3 unit_direction = r.direction.normalize();
       auto a = 0.5 * (unit_direction.y + 1.0);
       Color color = (1.0 - a) * Color(1, 1, 1) + a * Color(0.5, 0.7, 1.0);
 
-      return color * attenuation;
+      return color * currentAttenuation;
     }
   }
 
