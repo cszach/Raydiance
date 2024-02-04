@@ -16,6 +16,8 @@ public:
                                   curandState *localRandState) const = 0;
 
   __device__ static Vec3 reflect(const Vec3 &v, const Vec3 &n);
+  __device__ static Vec3 refract(const Vec3 &uv, const Vec3 &n,
+                                 double etaRatio);
 };
 
 class Lambertian : public Material {
@@ -37,6 +39,18 @@ private:
 
 public:
   __device__ Metal(const Color &_albedo, float _fuzziness);
+
+  __device__ bool scatter(const Ray &rayIn, const HitRecord &record,
+                          Color &attenuation, Ray &scattered,
+                          curandState *localRandState) const override;
+};
+
+class Dielectric : public Material {
+private:
+  float indexOfRefraction;
+
+public:
+  __device__ Dielectric(double _indexOfRefraction);
 
   __device__ bool scatter(const Ray &rayIn, const HitRecord &record,
                           Color &attenuation, Ray &scattered,
