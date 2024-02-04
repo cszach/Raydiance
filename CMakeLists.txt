@@ -17,6 +17,7 @@ set(LIBRARY_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 
 set(LIBRARY_SOURCES
     ${LIBRARY_SOURCE_DIR}/3d/Camera.cu
+    ${LIBRARY_SOURCE_DIR}/3d/Material.cu
     ${LIBRARY_SOURCE_DIR}/3d/Object.cu
     ${LIBRARY_SOURCE_DIR}/3d/Renderer.cu
     ${LIBRARY_SOURCE_DIR}/3d/Scene.cu

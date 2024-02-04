@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <memory>
+class Material;
 
 #include "Ray.cuh"
 #include "Vec3.cuh"
@@ -11,6 +11,7 @@ struct HitRecord {
   Point3 p;
   Vec3 normal;
   bool front_face;
+  Material *material;
 
   __device__ inline void setFaceNormal(const Ray &ray,
                                        const Vec3 &outward_normal) {
@@ -20,10 +21,10 @@ struct HitRecord {
 };
 
 class Object {
-private:
-  Point3 _position;
-
 public:
+  Point3 _position;
+  Material *material;
+
   __device__ Object();
   virtual ~Object() = default;
 

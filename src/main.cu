@@ -1,27 +1,35 @@
+#include "Material.cuh"
+#include "Renderer.cuh"
+#include "Scene.cuh"
+#include "Sphere.cuh"
+#include "cuda_helper.cuh"
 #include <curand_kernel.h>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdio.h>
 
-#include "Renderer.cuh"
-#include "Scene.cuh"
-#include "Sphere.cuh"
-#include "cuda_helper.cuh"
-
 __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
                       float vertical_fov, float aspect_ratio) {
   if (threadIdx.x == 0 && blockIdx.x == 0) {
-    auto test_sphere = new Sphere(0.5);
-    test_sphere->setPosition(Point3(0, 0, -1));
-
-    auto floor = new Sphere(100);
+    auto floor = new Sphere(100, new Lambertian(Color(0.8, 0.8, 0.0)));
     floor->setPosition(Point3(0, -100.5, -1));
 
-    *(d_objects) = test_sphere;
-    *(d_objects + 1) = floor;
+    auto center_sphere = new Sphere(0.5, new Lambertian(Color(0.7, 0.3, 0.3)));
+    center_sphere->setPosition(Point3(0, 0, -1));
 
-    *d_scene = new Scene(d_objects, 2);
+    auto left_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.8, 0.8)));
+    left_sphere->setPosition(Point3(-1, 0, -1));
+
+    auto right_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.6, 0.2)));
+    right_sphere->setPosition(Point3(1, 0, -1));
+
+    *(d_objects) = floor;
+    *(d_objects + 1) = center_sphere;
+    *(d_objects + 2) = left_sphere;
+    *(d_objects + 3) = right_sphere;
+
+    *d_scene = new Scene(d_objects, 4);
 
     *d_camera = new Camera(vertical_fov, aspect_ratio);
   }
@@ -34,9 +42,11 @@ int main() {
   const float VERTICAL_FOV = 100;
   const int IMAGE_WIDTH = 1200;
   const int IMAGE_HEIGHT = static_cast<int>(IMAGE_WIDTH / ASPECT_RATIO);
-  const int NUM_OBJECTS = 2;
+  const int NUM_OBJECTS = 4;
 
   std::ofstream f_out("image.ppm");
+
+  cudaDeviceSetLimit(cudaLimitStackSize, 1024 * 2);
 
   // Camera
 

@@ -16,8 +16,7 @@ At the moment, I see two primary goals for this project:
 
 ## Current status
 
-Ray collision with lambertian spheres is implemented. Accelerated using CUDA,
-super fast now! Render time went from 2 minutes to 2 seconds. 🏃
+Metal and lambertiam materials.
 
 [![Current output image.](image.png)](image.ppm)
 
@@ -25,9 +24,9 @@ super fast now! Render time went from 2 minutes to 2 seconds. 🏃
 
 Requirements:
 
--   CMake version 3.5+
--   GCC (will add support for other compilers in the future)
--   The CUDA Toolkit
+- CMake version 3.5+
+- GCC (will add support for other compilers in the future)
+- The CUDA Toolkit
 
 > **Note**: Replace the CUDA include path in `CMakeLists.txt` with where
 > `<curand_kernel.h>` is on your system.

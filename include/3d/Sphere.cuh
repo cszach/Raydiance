@@ -6,10 +6,10 @@
 
 class Sphere : public Object {
 private:
-  float _radius;
+  float radius;
 
 public:
-  __device__ explicit Sphere(float radius);
+  __device__ Sphere(float _radius, Material *_material);
 
   __device__ bool hit(const Ray &ray, float t_min, float t_max,
                       HitRecord &rec) const override;
