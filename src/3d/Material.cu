@@ -22,14 +22,16 @@ __device__ bool Lambertian::scatter(const Ray &rayIn, const HitRecord &record,
   return true;
 }
 
-__device__ Metal::Metal(const Color &_albedo) : albedo(_albedo) {}
+__device__ Metal::Metal(const Color &_albedo, float _fuzziness)
+    : albedo(_albedo), fuzziness(_fuzziness) {}
 
 __device__ bool Metal::scatter(const Ray &rayIn, const HitRecord &record,
                                Color &attenuation, Ray &scattered,
                                curandState *localRandState) const {
   Vec3 reflected =
       Material::reflect(rayIn.direction.normalize(), record.normal);
-  scattered = Ray(record.p, reflected);
+  scattered =
+      Ray(record.p, reflected + fuzziness * Vec3::randomUnit(localRandState));
   attenuation = albedo;
 
   return true;
