@@ -33,9 +33,10 @@ public:
 class Metal : public Material {
 private:
   Color albedo;
+  float fuzziness;
 
 public:
-  __device__ Metal(const Color &_albedo);
+  __device__ Metal(const Color &_albedo, float _fuzziness);
 
   __device__ bool scatter(const Ray &rayIn, const HitRecord &record,
                           Color &attenuation, Ray &scattered,

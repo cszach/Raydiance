@@ -18,10 +18,10 @@ __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
     auto center_sphere = new Sphere(0.5, new Lambertian(Color(0.7, 0.3, 0.3)));
     center_sphere->setPosition(Point3(0, 0, -1));
 
-    auto left_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.8, 0.8)));
+    auto left_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.8, 0.8), 0.3));
     left_sphere->setPosition(Point3(-1, 0, -1));
 
-    auto right_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.6, 0.2)));
+    auto right_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.6, 0.2), 1.0));
     right_sphere->setPosition(Point3(1, 0, -1));
 
     *(d_objects) = floor;
