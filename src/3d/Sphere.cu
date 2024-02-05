@@ -1,6 +1,6 @@
-#include "Sphere.cuh"
-
+#include "Object.cuh"
 #include "Ray.cuh"
+#include "Sphere.cuh"
 #include "Vec3.cuh"
 
 __device__ Sphere::Sphere(float _radius, Material *_material)
@@ -36,4 +36,9 @@ __device__ bool Sphere::hit(const Ray &ray, float t_min, float t_max,
   rec.material = material;
 
   return true;
+}
+
+__device__ void Sphere::computeBoundingBox() {
+  Vec3 halfExtents = Vec3(radius, radius, radius);
+  boundingBox = AABB(position - halfExtents, position + halfExtents);
 }

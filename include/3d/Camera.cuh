@@ -20,6 +20,8 @@ public:
 
   __device__ bool hit(const Ray &ray, float tMin, float tMax,
                       HitRecord &rec) const override;
+
+  __device__ virtual void computeBoundingBox() override;
 };
 
 #endif // CAMERA_H

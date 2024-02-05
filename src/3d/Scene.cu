@@ -26,3 +26,5 @@ __device__ bool Scene::hit(const Ray &ray, float t_min, float t_max,
 
   return hit_anything;
 }
+
+__device__ void Scene::computeBoundingBox() { return; }
