@@ -9,3 +9,5 @@ __device__ bool Camera::hit(const Ray &ray, float tMin, float tMax,
                             HitRecord &rec) const {
   return false;
 }
+
+__device__ void Camera::computeBoundingBox() { return; }

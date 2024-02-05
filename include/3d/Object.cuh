@@ -3,6 +3,7 @@
 
 class Material;
 
+#include "AABB.cuh"
 #include "Ray.cuh"
 #include "Vec3.cuh"
 
@@ -24,12 +25,15 @@ class Object {
 public:
   Point3 position;
   Material *material;
+  AABB boundingBox;
 
   __device__ Object();
   virtual ~Object() = default;
 
   __device__ virtual bool hit(const Ray &ray, float t_min, float t_max,
                               HitRecord &rec) const = 0;
+
+  __device__ virtual void computeBoundingBox() = 0;
 };
 
 #endif // OBJECT_H

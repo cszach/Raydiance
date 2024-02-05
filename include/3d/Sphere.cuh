@@ -13,6 +13,8 @@ public:
 
   __device__ bool hit(const Ray &ray, float t_min, float t_max,
                       HitRecord &rec) const override;
+
+  __device__ virtual void computeBoundingBox() override;
 };
 
 #endif // SPHERE_H
