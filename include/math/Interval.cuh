@@ -5,27 +5,27 @@
 
 class Interval {
 public:
-  float _min;
-  float _max;
+  float min;
+  float max;
 
-  __host__ __device__ Interval() : _min(+infinity), _max(-infinity) {}
+  __host__ __device__ Interval() : min(+infinity), max(-infinity) {}
 
-  __host__ __device__ Interval(float min, float max) : _min(min), _max(max) {}
+  __host__ __device__ Interval(float min, float max) : min(min), max(max) {}
 
   __host__ __device__ bool contains(float x) const {
-    return _min <= x && x <= _max;
+    return min <= x && x <= max;
   }
 
   __host__ __device__ bool surrounds(float x) const {
-    return _min < x && x < _max;
+    return min < x && x < max;
   }
 
   __host__ __device__ float clamp(float x) const {
-    if (x < _min)
-      return _min;
+    if (x < min)
+      return min;
 
-    if (x > _max)
-      return _max;
+    if (x > max)
+      return max;
 
     return x;
   }
