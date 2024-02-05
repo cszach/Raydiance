@@ -16,7 +16,8 @@ At the moment, I see two primary goals for this project:
 
 ## Current status
 
-Metal and lambertiam materials.
+CUDA-accelerated ray tracing with support for spheres and 3 materials:
+Lambertian, metal, and dielectric. Camera is positionable.
 
 [![Current output image.](image.png)](image.ppm)
 

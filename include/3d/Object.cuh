@@ -22,14 +22,11 @@ struct HitRecord {
 
 class Object {
 public:
-  Point3 _position;
+  Point3 position;
   Material *material;
 
   __device__ Object();
   virtual ~Object() = default;
-
-  __host__ __device__ Point3 getPosition() const;
-  __device__ void setPosition(const Point3 &position);
 
   __device__ virtual bool hit(const Ray &ray, float t_min, float t_max,
                               HitRecord &rec) const = 0;
