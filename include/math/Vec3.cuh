@@ -6,8 +6,8 @@
 #include "MathUtils.cuh"
 
 #define RANDVEC3                                                               \
-  Vec3(curand_uniform(local_rand_state), curand_uniform(local_rand_state),     \
-       curand_uniform(local_rand_state))
+  Vec3(curand_uniform(localRandState), curand_uniform(localRandState),         \
+       curand_uniform(localRandState))
 
 class Vec3 {
 public:
@@ -35,8 +35,8 @@ public:
   __device__ float dot(const Vec3 &v) const;
   __device__ Vec3 cross(const Vec3 &v) const;
 
-  __device__ static Vec3 randomInUnitSphere(curandState *local_rand_state);
-  __device__ static Vec3 randomUnit(curandState *local_rand_state);
+  __device__ static Vec3 randomInUnitSphere(curandState *localRandState);
+  __device__ static Vec3 randomUnit(curandState *localRandState);
 };
 
 __device__ inline Vec3 operator+(const Vec3 &u, const Vec3 &v) {
@@ -75,7 +75,7 @@ __device__ inline Vec3 Vec3::cross(const Vec3 &v) const {
   return Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
 }
 
-__device__ inline Vec3 Vec3::randomInUnitSphere(curandState *local_rand_state) {
+__device__ inline Vec3 Vec3::randomInUnitSphere(curandState *localRandState) {
   while (true) {
     auto v = 2.0f * RANDVEC3 - Vec3(1, 1, 1);
 
@@ -85,8 +85,8 @@ __device__ inline Vec3 Vec3::randomInUnitSphere(curandState *local_rand_state) {
   }
 }
 
-__device__ inline Vec3 Vec3::randomUnit(curandState *local_rand_state) {
-  return randomInUnitSphere(local_rand_state).normalize();
+__device__ inline Vec3 Vec3::randomUnit(curandState *localRandState) {
+  return randomInUnitSphere(localRandState).normalize();
 }
 
 using Point3 = Vec3;
