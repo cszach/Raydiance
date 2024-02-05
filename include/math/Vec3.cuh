@@ -19,6 +19,7 @@ public:
   __device__ Vec3(float x, float y, float z);
 
   __device__ void set(float x, float y, float z);
+  __device__ float get(int i) const;
 
   __device__ float length() const;
   __device__ float lengthSquared() const;
