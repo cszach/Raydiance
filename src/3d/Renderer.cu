@@ -17,7 +17,8 @@ __global__ void setupRenderer(DRenderer **d_renderer, int outputWidth,
 }
 
 __global__ void preRender(DRenderer **d_renderer, Camera **d_camera,
-                          int numSamples, int numBounces) {
+                          int numSamples, int numBounces,
+                          curandState *rand_state) {
   if (threadIdx.x == 0 && blockIdx.x == 0) {
     // Initialize camera
 
@@ -116,8 +117,8 @@ __device__ DRenderer::DRenderer(int _outputWidth, int _outputHeight)
 
 __host__ void Renderer::render(Scene **d_scene, Camera **d_camera,
                                curandState *d_rand_state) {
-
-  preRender<<<1, 1>>>(d_renderer, d_camera, numSamples, numBounces);
+  preRender<<<1, 1>>>(d_renderer, d_camera, numSamples, numBounces,
+                      d_rand_state);
   checkCudaError(cudaDeviceSynchronize());
 
   // CUDA
@@ -130,8 +131,6 @@ __host__ void Renderer::render(Scene **d_scene, Camera **d_camera,
   dim3 threads(NUM_THREADS_X, NUM_THREADS_Y);
 
   p_render<<<blocks, threads>>>(d_scene, d_renderer, this->fb, d_rand_state);
-
-  checkCudaError(cudaDeviceSynchronize());
 }
 
 __device__ Ray DRenderer::getRay(int i, int j,
