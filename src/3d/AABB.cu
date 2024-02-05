@@ -11,6 +11,11 @@ __device__ AABB::AABB(const Point3 &a, const Point3 &b) {
   y = Interval(fmin(a.y, b.y), fmax(a.y, b.y));
   z = Interval(fmin(a.z, b.z), fmax(a.z, b.z));
 }
+__device__ AABB::AABB(const AABB &a, const AABB &b) {
+  x = Interval(a.x, b.x);
+  y = Interval(a.y, b.y);
+  z = Interval(a.z, b.z);
+}
 
 __device__ const Interval &AABB::axis(int i) const {
   if (i == 0)
