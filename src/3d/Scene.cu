@@ -1,11 +1,11 @@
 #include "Scene.cuh"
 #include "cuda_helper.cuh"
 
-__device__ Scene::Scene(Object **objects, int num_objects)
-    : _objects(objects), _num_objects(num_objects) {}
+__device__ Scene::Scene(Object **objects, int numobjects)
+    : objects(objects), count(numobjects) {}
 
 // __device__ void Scene::add(Object *object) {
-//   *(d_objects + _num_objects++) = object;
+//   *(dobjects + count++) = object;
 // }
 
 __device__ bool Scene::hit(const Ray &ray, float t_min, float t_max,
@@ -14,8 +14,8 @@ __device__ bool Scene::hit(const Ray &ray, float t_min, float t_max,
   bool hit_anything = false;
   float closest_so_far = t_max;
 
-  for (int i = 0; i < _num_objects; i++) {
-    bool got_hit = _objects[i]->hit(ray, t_min, t_max, temp_record);
+  for (int i = 0; i < count; i++) {
+    bool got_hit = objects[i]->hit(ray, t_min, t_max, temp_record);
 
     if (got_hit && temp_record.t < closest_so_far) {
       hit_anything = true;
@@ -27,4 +27,11 @@ __device__ bool Scene::hit(const Ray &ray, float t_min, float t_max,
   return hit_anything;
 }
 
-__device__ void Scene::computeBoundingBox() { return; }
+__device__ void Scene::computeBoundingBox() {
+  boundingBox = AABB();
+
+  for (int i = 0; i < count; i++) {
+    objects[i]->computeBoundingBox();
+    boundingBox = AABB(boundingBox, objects[i]->boundingBox);
+  }
+}

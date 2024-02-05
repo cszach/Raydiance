@@ -8,19 +8,16 @@ public:
   float min;
   float max;
 
-  __host__ __device__ Interval() : min(+infinity), max(-infinity) {}
+  __device__ Interval() : min(+infinity), max(-infinity) {}
+  __device__ Interval(float min, float max) : min(min), max(max) {}
+  __device__ Interval(const Interval &a, const Interval &b)
+      : min(fmin(a.min, b.min)), max(fmax(a.max, b.max)) {}
 
-  __host__ __device__ Interval(float min, float max) : min(min), max(max) {}
+  __device__ bool contains(float x) const { return min <= x && x <= max; }
 
-  __host__ __device__ bool contains(float x) const {
-    return min <= x && x <= max;
-  }
+  __device__ bool surrounds(float x) const { return min < x && x < max; }
 
-  __host__ __device__ bool surrounds(float x) const {
-    return min < x && x < max;
-  }
-
-  __host__ __device__ float clamp(float x) const {
+  __device__ float clamp(float x) const {
     if (x < min)
       return min;
 

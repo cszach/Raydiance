@@ -8,10 +8,10 @@
 
 class Scene : public Object {
 public:
-  Object **_objects;
-  int _num_objects = 0;
+  Object **objects;
+  int count = 0;
 
-  __device__ Scene(Object **objects, int num_objects);
+  __device__ Scene(Object **objects, int numobjects);
 
   // __device__ void add(Object *object);
 
