@@ -76,7 +76,15 @@ int main() {
 
   Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
 
+  clock_t start, stop;
+  start = clock();
+
   renderer.render(d_scene, d_camera, d_rand_state);
+
+  stop = clock();
+  double timeSeconds = ((double)(stop - start)) / CLOCKS_PER_SEC;
+
+  std::cout << "Rendering took " << timeSeconds << " seconds.\n";
 
   // Write to PPM
 
