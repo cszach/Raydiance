@@ -1,5 +1,5 @@
 #include <curand_kernel.h>
-// #include <iostream>
+#include <iostream>
 
 #include "Material.cuh"
 #include "MathUtils.cuh"
@@ -7,70 +7,51 @@
 #include "Scene.cuh"
 #include "cuda_helper.cuh"
 
-__global__ void p_render(Scene **scene, DRenderer **renderer, float *fb,
-                         curandState *rand_state);
-__global__ void setupRenderer(DRenderer **d_renderer, Camera **d_camera,
-                              int output_width, int output_height);
+// global
 
-__host__ Renderer::Renderer(Camera **d_camera, int output_width,
-                            int output_height)
-    : output_width(output_width), output_height(output_height),
-      fb_size(output_width * output_height * 3 * sizeof(float)) {
-  checkCudaError(cudaMallocManaged((void **)&fb, fb_size));
-
-  checkCudaError(cudaMalloc((void **)&d_renderer, sizeof(DRenderer *)));
-
-  setupRenderer<<<1, 1>>>(d_renderer, d_camera, output_width, output_height);
-
-  checkCudaError(cudaGetLastError());
-  checkCudaError(cudaDeviceSynchronize());
-}
-
-__global__ void setupRenderer(DRenderer **d_renderer, Camera **d_camera,
-                              int output_width, int output_height) {
+__global__ void setupRenderer(DRenderer **d_renderer, int outputWidth,
+                              int outputHeight) {
   if (threadIdx.x == 0 && blockIdx.x == 0) {
-    *d_renderer = new DRenderer(d_camera, output_width, output_height);
-
-    (*d_renderer)->num_samples = 100;
-    (*d_renderer)->num_bounces = 50;
+    *d_renderer = new DRenderer(outputWidth, outputHeight);
   }
 }
 
-__device__ DRenderer::DRenderer(Camera **camera, int output_width,
-                                int output_height)
-    : _camera(camera), output_width(output_width), output_height(output_height),
-      _fb_size(output_width * output_height) {
-  setCamera(camera);
-}
+__global__ void preRender(DRenderer **d_renderer, Camera **d_camera,
+                          int numSamples, int numBounces) {
+  if (threadIdx.x == 0 && blockIdx.x == 0) {
+    // Initialize camera
 
-__device__ Camera **DRenderer::getCamera() const { return _camera; }
+    const Camera *camera = *d_camera;
+    float focalLength = (camera->position - camera->lookAt).length();
+    float fovRadians = degToRad(camera->fov);
+    float h = tan(fovRadians / 2.0f);
+    float viewportHeight = 2.0f * h * focalLength;
+    float viewportWidth = viewportHeight * camera->aspectRatio;
 
-__device__ void DRenderer::setCamera(Camera **camera) {
-  _camera = camera;
+    Vec3 w = (camera->position - camera->lookAt)
+                 .normalize();                // Opposite of camera direction
+    Vec3 u = camera->up.cross(w).normalize(); // Local right
+    Vec3 v = w.cross(u);                      // Local up
 
-  auto viewport_u = (*camera)->getViewportU();
-  auto viewport_v = (*camera)->getViewportV();
+    Vec3 viewportU = u * viewportWidth;
+    Vec3 viewportV = -v * viewportHeight;
 
-  _pixel_delta_u = viewport_u / output_width;
-  _pixel_delta_v = viewport_v / output_height;
+    Vec3 pixelDeltaU = viewportU / (*d_renderer)->outputWidth;
+    Vec3 pixelDeltaV = viewportV / (*d_renderer)->outputHeight;
 
-  _pixel00 = (*camera)->getViewportUpperLeft() +
-             0.5 * (_pixel_delta_u + _pixel_delta_v);
+    Point3 center = camera->position;
 
-  _center = (*camera)->getPosition();
-}
+    Point3 viewportUpperLeft =
+        center - (focalLength * w) - viewportU / 2 - viewportV / 2;
+    Point3 pixel00 = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
 
-__host__ void Renderer::render(Scene **scene, curandState *d_rand_state) {
-  int NUM_THREADS_X = 8;
-  int NUM_THREADS_Y = 8;
-
-  dim3 blocks(output_width / NUM_THREADS_X + 1,
-              output_height / NUM_THREADS_Y + 1);
-  dim3 threads(NUM_THREADS_X, NUM_THREADS_Y);
-
-  p_render<<<blocks, threads>>>(scene, d_renderer, this->fb, d_rand_state);
-
-  checkCudaError(cudaDeviceSynchronize());
+    (*d_renderer)->pixel00 = pixel00;
+    (*d_renderer)->pixelDeltaU = pixelDeltaU;
+    (*d_renderer)->pixelDeltaV = pixelDeltaV;
+    (*d_renderer)->center = center;
+    (*d_renderer)->numSamples = numSamples;
+    (*d_renderer)->numBounces = numBounces;
+  }
 }
 
 __global__ void p_render(Scene **scene, DRenderer **d_renderer, float *fb,
@@ -78,27 +59,27 @@ __global__ void p_render(Scene **scene, DRenderer **d_renderer, float *fb,
   int i = threadIdx.x + blockIdx.x * blockDim.x;
   int j = threadIdx.y + blockIdx.y * blockDim.y;
 
-  if (i >= (*d_renderer)->output_width || j >= (*d_renderer)->output_height) {
+  if (i >= (*d_renderer)->outputWidth || j >= (*d_renderer)->outputHeight) {
     return;
   }
 
-  int pixel_index = 3 * (i + j * (*d_renderer)->output_width);
+  int pixel_index = 3 * (i + j * (*d_renderer)->outputWidth);
 
   curand_init(2024, pixel_index / 3, 0, &rand_state[pixel_index / 3]);
   curandState local_rand_state = rand_state[pixel_index / 3];
 
   Color pixel_color(0, 0, 0);
 
-  for (int sample = 0; sample < (*d_renderer)->num_samples; ++sample) {
+  for (int sample = 0; sample < (*d_renderer)->numSamples; ++sample) {
     Ray ray = (*d_renderer)->getRay(i, j, &local_rand_state);
     pixel_color += (*d_renderer)
-                       ->getRayColor(ray, scene, (*d_renderer)->num_bounces,
+                       ->getRayColor(ray, scene, (*d_renderer)->numBounces,
                                      &local_rand_state);
   }
 
   // Process samples
 
-  pixel_color /= (*d_renderer)->num_samples;
+  pixel_color /= (*d_renderer)->numSamples;
 
   auto r = pixel_color.x;
   auto g = pixel_color.y;
@@ -117,14 +98,48 @@ __global__ void p_render(Scene **scene, DRenderer **d_renderer, float *fb,
   fb[pixel_index + 2] = b < 0.0 ? 0.0 : (b > 0.99 ? 0.99 : b);
 }
 
-// PRIVATE (?)
+__host__ Renderer::Renderer(int _outputWidth, int _outputHeight)
+    : outputWidth(_outputWidth), outputHeight(_outputHeight),
+      fb_size(_outputWidth * _outputHeight * 3 * sizeof(float)) {
+  checkCudaError(cudaMallocManaged((void **)&fb, fb_size));
+
+  checkCudaError(cudaMalloc((void **)&d_renderer, sizeof(DRenderer *)));
+
+  setupRenderer<<<1, 1>>>(d_renderer, outputWidth, outputHeight);
+
+  checkCudaError(cudaGetLastError());
+  checkCudaError(cudaDeviceSynchronize());
+}
+
+__device__ DRenderer::DRenderer(int _outputWidth, int _outputHeight)
+    : outputWidth(_outputWidth), outputHeight(_outputHeight) {}
+
+__host__ void Renderer::render(Scene **d_scene, Camera **d_camera,
+                               curandState *d_rand_state) {
+
+  preRender<<<1, 1>>>(d_renderer, d_camera, numSamples, numBounces);
+  checkCudaError(cudaDeviceSynchronize());
+
+  // CUDA
+
+  int NUM_THREADS_X = 8;
+  int NUM_THREADS_Y = 8;
+
+  dim3 blocks(outputWidth / NUM_THREADS_X + 1,
+              outputHeight / NUM_THREADS_Y + 1);
+  dim3 threads(NUM_THREADS_X, NUM_THREADS_Y);
+
+  p_render<<<blocks, threads>>>(d_scene, d_renderer, this->fb, d_rand_state);
+
+  checkCudaError(cudaDeviceSynchronize());
+}
 
 __device__ Ray DRenderer::getRay(int i, int j,
                                  curandState *local_rand_state) const {
-  auto pixel_center = _pixel00 + i * _pixel_delta_u + j * _pixel_delta_v;
+  auto pixel_center = pixel00 + i * pixelDeltaU + j * pixelDeltaV;
   auto pixel_sample = pixel_center + getPixelSampleSquare(local_rand_state);
 
-  return Ray(_center, pixel_sample - _center);
+  return Ray(center, pixel_sample - center);
 }
 
 __device__ Point3
@@ -132,7 +147,7 @@ DRenderer::getPixelSampleSquare(curandState *local_rand_state) const {
   auto x = -0.5 + random_float(local_rand_state);
   auto y = -0.5 + random_float(local_rand_state);
 
-  return x * _pixel_delta_u + y * _pixel_delta_v;
+  return x * pixelDeltaU + y * pixelDeltaV;
 }
 
 __device__ Color DRenderer::getRayColor(const Ray &ray, Scene **scene,

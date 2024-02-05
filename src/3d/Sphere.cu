@@ -10,7 +10,7 @@ __device__ Sphere::Sphere(float _radius, Material *_material)
 
 __device__ bool Sphere::hit(const Ray &ray, float t_min, float t_max,
                             HitRecord &rec) const {
-  Vec3 o_c = ray.origin - getPosition(); // ray origin - sphere position
+  Vec3 o_c = ray.origin - position; // ray origin - sphere position
   float a = ray.direction.dot(ray.direction);
   float half_b = ray.direction.dot(o_c);
   float c = o_c.dot(o_c) - radius * radius;
@@ -31,7 +31,7 @@ __device__ bool Sphere::hit(const Ray &ray, float t_min, float t_max,
 
   rec.t = root;
   rec.p = ray.at(root);
-  Vec3 outward_normal = (rec.p - getPosition()) / radius;
+  Vec3 outward_normal = (rec.p - position) / radius;
   rec.setFaceNormal(ray, outward_normal);
   rec.material = material;
 

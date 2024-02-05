@@ -10,19 +10,19 @@
 #include <stdio.h>
 
 __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
-                      float vertical_fov, float aspect_ratio) {
+                      float fov, float aspectRatio) {
   if (threadIdx.x == 0 && blockIdx.x == 0) {
     auto floor = new Sphere(100, new Lambertian(Color(0.8, 0.8, 0.0)));
-    floor->setPosition(Point3(0, -100.5, -1));
+    floor->position = Point3(0, -100.5, -1);
 
     auto center_sphere = new Sphere(0.5, new Lambertian(Color(0.1, 0.2, 0.5)));
-    center_sphere->setPosition(Point3(0, 0, -1));
+    center_sphere->position = Point3(0, 0, -1);
 
     auto left_sphere = new Sphere(0.5, new Dielectric(1.5));
-    left_sphere->setPosition(Point3(-1, 0, -1));
+    left_sphere->position = Point3(-1, 0, -1);
 
     auto right_sphere = new Sphere(0.5, new Metal(Color(0.8, 0.6, 0.2), 0.0));
-    right_sphere->setPosition(Point3(1, 0, -1));
+    right_sphere->position = Point3(1, 0, -1);
 
     *(d_objects) = floor;
     *(d_objects + 1) = center_sphere;
@@ -31,16 +31,18 @@ __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
 
     *d_scene = new Scene(d_objects, 4);
 
-    *d_camera = new Camera(vertical_fov, aspect_ratio);
+    *d_camera = new Camera(fov, aspectRatio);
+    (*d_camera)->position = Point3(-2, 2, 1);
+    (*d_camera)->lookAt = Point3(0, 0, -1);
   }
 }
 
 int main() {
   // Image
 
-  const float ASPECT_RATIO = 2.0;
-  const float VERTICAL_FOV = 100;
-  const int IMAGE_WIDTH = 1200;
+  const float ASPECT_RATIO = 16.0 / 9.0;
+  const float VERTICAL_FOV = 20;
+  const int IMAGE_WIDTH = 400;
   const int IMAGE_HEIGHT = static_cast<int>(IMAGE_WIDTH / ASPECT_RATIO);
   const int NUM_OBJECTS = 4;
 
@@ -72,9 +74,9 @@ int main() {
   checkCudaError(cudaGetLastError());
   checkCudaError(cudaDeviceSynchronize());
 
-  Renderer renderer(d_camera, IMAGE_WIDTH, IMAGE_HEIGHT);
+  Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
 
-  renderer.render(d_scene, d_rand_state);
+  renderer.render(d_scene, d_camera, d_rand_state);
 
   // Write to PPM
 
