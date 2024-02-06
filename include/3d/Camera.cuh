@@ -18,7 +18,7 @@ public:
 
   __device__ Camera(float vertical_fov, float aspect_ratio);
 
-  __device__ bool hit(const Ray &ray, float tMin, float tMax,
+  __device__ bool hit(const Ray &ray, Interval ray_t,
                       HitRecord &rec) const override;
 
   __device__ virtual void computeBoundingBox() override;

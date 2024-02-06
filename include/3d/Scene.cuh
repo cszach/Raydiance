@@ -1,21 +1,25 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "BVH.cuh"
+#include "Object.cuh"
 #include <memory>
 #include <vector>
 
-#include "Object.cuh"
-
 class Scene : public Object {
-public:
+private:
   Object **objects;
   int count = 0;
+  BVHNode *bvh;
 
-  __device__ Scene(Object **objects, int numobjects);
+public:
+  __device__ Scene(Object **_objects, int _numobjects);
+
+  __device__ void computeBVH(curandState *localRandState);
 
   // __device__ void add(Object *object);
 
-  __device__ bool hit(const Ray &ray, float t_min, float t_max,
+  __device__ bool hit(const Ray &ray, Interval ray_t,
                       HitRecord &rec) const override;
 
   __device__ virtual void computeBoundingBox() override;

@@ -11,7 +11,7 @@ private:
 public:
   __device__ Sphere(float _radius, Material *_material);
 
-  __device__ bool hit(const Ray &ray, float t_min, float t_max,
+  __device__ bool hit(const Ray &ray, Interval ray_t,
                       HitRecord &rec) const override;
 
   __device__ virtual void computeBoundingBox() override;

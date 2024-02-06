@@ -30,7 +30,7 @@ public:
   __device__ Object();
   virtual ~Object() = default;
 
-  __device__ virtual bool hit(const Ray &ray, float t_min, float t_max,
+  __device__ virtual bool hit(const Ray &ray, Interval ray_t,
                               HitRecord &rec) const = 0;
 
   __device__ virtual void computeBoundingBox() = 0;
