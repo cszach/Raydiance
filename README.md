@@ -22,6 +22,9 @@ accelerated using a BVH.
 
 [![Current output image.](image.png)](image.ppm)
 
+_This image was rendered at 10 samples and 5 bounces per ray, and took 37
+seconds to render on an RTX 3080 Mobile._
+
 ## Build
 
 Requirements:

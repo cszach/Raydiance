@@ -47,6 +47,6 @@ __device__ void Scene::computeBoundingBox() {
 
   for (int i = 0; i < count; i++) {
     (*(objects + i))->computeBoundingBox();
-    boundingBox = AABB(boundingBox, (*(objects + i))->boundingBox);
+    boundingBox = AABB(boundingBox, objects[i]->boundingBox);
   }
 }

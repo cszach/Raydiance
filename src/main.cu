@@ -19,63 +19,36 @@ __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
     curandState *localRandState = randState;
 
     int numObjects = 0;
+    const float spacing = 1.5;
 
-    auto floor = new Sphere(1000, new Lambertian(Color(0.5, 0.5, 0.5)));
-    floor->position.set(0, -1000, 0);
-    *(d_objects + numObjects++) = floor;
+    for (int x = -3; x < 4; ++x) {
+      for (int y = -3; y < 4; ++y) {
+        for (int z = -3; z < 4; ++z) {
+          float randomDouble = RAND_DOUBLE;
+          Material *material;
 
-    for (int a = -11; a < 11; a++) {
-      for (int b = -11; b < 11; b++) {
-        float randomDouble = RAND_DOUBLE;
-
-        Point3 center(a + 0.9 * randomDouble, 0.2, b + 0.9 * randomDouble);
-
-        if ((center - Point3(4, 0.2, 0)).length() > 0.9) {
-          Sphere *sphere;
-
-          if (randomDouble < 0.8) { // diffuse
-            Color albedo = RANDVEC3 * RANDVEC3;
-
-            sphere = new Sphere(0.2, new Lambertian(albedo));
-            sphere->position = center;
-            *(d_objects + numObjects++) = sphere;
-          } else if (randomDouble < 0.95) { // metal
-            Color albedo =
-                Vec3(0.5f * (1.0f + RAND_DOUBLE), 0.5f * (1.0f + RAND_DOUBLE),
-                     0.5f * (1.0f + RAND_DOUBLE));
-            float fuzziness = 0.5f * RAND_DOUBLE;
-
-            sphere = new Sphere(0.2, new Metal(albedo, fuzziness));
-            sphere->position = center;
-            *(d_objects + numObjects++) = sphere;
-          } else { // glass
-            sphere = new Sphere(0.2, new Dielectric(1.5));
-            sphere->position = center;
-            *(d_objects + numObjects++) = sphere;
+          if (randomDouble < 0.5) {
+            material = new Lambertian(RANDVEC3);
+          } else if (randomDouble < 0.8) {
+            material = new Metal(RANDVEC3, RAND_DOUBLE);
+          } else {
+            material = new Dielectric(1.5);
           }
+
+          auto sphere = new Sphere(0.5, material);
+          sphere->position.set(x * spacing, y * spacing, z * spacing);
+
+          d_objects[numObjects++] = sphere;
         }
       }
     }
-
-    Sphere *bigSphere1 = new Sphere(1.0, new Dielectric(1.5));
-    bigSphere1->position.set(0, 1, 0);
-
-    Sphere *bigSphere2 = new Sphere(1.0, new Lambertian(Color(0.4, 0.2, 0.1)));
-    bigSphere2->position.set(-4, 1, 0);
-
-    Sphere *bigSphere3 = new Sphere(1.0, new Metal(Color(0.7, 0.6, 0.5), 0.0));
-    bigSphere3->position.set(4, 1, 0);
-
-    *(d_objects + numObjects++) = bigSphere1;
-    *(d_objects + numObjects++) = bigSphere2;
-    *(d_objects + numObjects++) = bigSphere3;
 
     *d_scene = new Scene(d_objects, numObjects);
     (*d_scene)->computeBoundingBox();
     (*d_scene)->computeBVH(localRandState);
 
     *d_camera = new Camera(fov, aspectRatio);
-    (*d_camera)->position.set(13, 2, 3);
+    (*d_camera)->position.set(13, 0, 3);
     (*d_camera)->lookAt.set(0, 0, 0);
   }
 }
@@ -87,7 +60,7 @@ int main() {
   const float VERTICAL_FOV = 20;
   const int IMAGE_WIDTH = 1200;
   const int IMAGE_HEIGHT = static_cast<int>(IMAGE_WIDTH / ASPECT_RATIO);
-  const int NUM_OBJECTS = 22 * 22 + 4;
+  const int NUM_OBJECTS = 7 * 7 * 7;
 
   std::ofstream f_out("image.ppm");
 
@@ -123,7 +96,7 @@ int main() {
   checkCudaError(cudaDeviceSynchronize());
 
   Renderer renderer(IMAGE_WIDTH, IMAGE_HEIGHT);
-  renderer.numSamples = 5;
+  renderer.numSamples = 10;
   renderer.numBounces = 5;
 
   clock_t start, stop;

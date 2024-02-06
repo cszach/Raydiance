@@ -9,14 +9,14 @@ __device__ BVHNode::BVHNode(Object **objects, size_t start, size_t end,
   size_t objectSpan = end - start;
 
   if (objectSpan == 1) {
-    left = right = *(objects + start);
+    left = right = objects[start];
   } else if (objectSpan == 2) {
-    if (comparator(*(objects + start), *(objects + start + 1))) {
-      left = *(objects + start);
-      right = *(objects + start + 1);
+    if (comparator(objects[start], objects[start + 1])) {
+      left = objects[start];
+      right = objects[start + 1];
     } else {
-      left = *(objects + start + 1);
-      right = *(objects + start);
+      left = objects[start + 1];
+      right = objects[start];
     }
   } else {
     sortPrimitives(objects, start, end, comparator);
@@ -48,14 +48,14 @@ __device__ void BVHNode::sortPrimitives(Object **objects, int start, int end,
                                         bool(comparator)(const Object *a,
                                                          const Object *b)) {
   for (int i = start + 1; i < end; i++) {
-    Object *o = *(objects + i);
+    Object *o = objects[i];
     int j = i - 1;
 
-    while (comparator(o, *(objects + j)) && j >= 0) {
-      *(objects + j + 1) = *(objects + j);
+    while (comparator(o, objects[j]) && j >= 0) {
+      objects[j + 1] = objects[j];
       j--;
     }
-    *(objects + j + 1) = o;
+    objects[j + 1] = o;
   }
 }
 
