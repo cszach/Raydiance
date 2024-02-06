@@ -158,7 +158,7 @@ __device__ Color DRenderer::getRayColor(const Ray &ray, Scene **scene,
   for (int i = 0; i < num_bounces; ++i) {
     HitRecord rec;
 
-    if ((*scene)->hit(r, 0.001f, INFINITY, rec)) {
+    if ((*scene)->hit(r, Interval(0, infinity), rec)) {
       Ray scattered;
       Color attenuation;
 

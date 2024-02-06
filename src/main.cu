@@ -1,3 +1,4 @@
+#include "BVH.cuh"
 #include "Material.cuh"
 #include "Renderer.cuh"
 #include "Scene.cuh"
@@ -70,6 +71,8 @@ __global__ void setup(Object **d_objects, Scene **d_scene, Camera **d_camera,
     *(d_objects + numObjects++) = bigSphere3;
 
     *d_scene = new Scene(d_objects, numObjects);
+    (*d_scene)->computeBoundingBox();
+    (*d_scene)->computeBVH(localRandState);
 
     *d_camera = new Camera(fov, aspectRatio);
     (*d_camera)->position.set(13, 2, 3);
@@ -88,7 +91,7 @@ int main() {
 
   std::ofstream f_out("image.ppm");
 
-  cudaDeviceSetLimit(cudaLimitStackSize, 1024 * 2);
+  cudaDeviceSetLimit(cudaLimitStackSize, 1024 * 4);
 
   // Camera
 

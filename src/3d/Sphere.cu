@@ -2,13 +2,14 @@
 #include "Ray.cuh"
 #include "Sphere.cuh"
 #include "Vec3.cuh"
+#include <cstdio>
 
 __device__ Sphere::Sphere(float _radius, Material *_material)
     : radius(_radius) {
   material = _material;
 }
 
-__device__ bool Sphere::hit(const Ray &ray, float t_min, float t_max,
+__device__ bool Sphere::hit(const Ray &ray, Interval ray_t,
                             HitRecord &rec) const {
   Vec3 o_c = ray.origin - position; // ray origin - sphere position
   float a = ray.direction.dot(ray.direction);
@@ -22,9 +23,9 @@ __device__ bool Sphere::hit(const Ray &ray, float t_min, float t_max,
   float sqrt_d = sqrt(discriminant);
   float root = (-half_b - sqrt_d) / a;
 
-  if (root < t_min || root > t_max) {
+  if (!ray_t.surrounds(root)) {
     root = (-half_b + sqrt_d) / a;
-    if (root < t_min || root > t_max) {
+    if (!ray_t.surrounds(root)) {
       return false;
     }
   }

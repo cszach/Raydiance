@@ -1,37 +1,52 @@
 #include "Scene.cuh"
 #include "cuda_helper.cuh"
+#include <cstdio>
 
-__device__ Scene::Scene(Object **objects, int numobjects)
-    : objects(objects), count(numobjects) {}
+__device__ Scene::Scene(Object **_objects, int _numobjects)
+    : objects(_objects), count(_numobjects) {}
+
+__device__ void Scene::computeBVH(curandState *localRandState) {
+  bvh = new BVHNode(objects, 0, count, localRandState);
+}
 
 // __device__ void Scene::add(Object *object) {
 //   *(dobjects + count++) = object;
 // }
 
-__device__ bool Scene::hit(const Ray &ray, float t_min, float t_max,
+__device__ bool Scene::hit(const Ray &ray, Interval ray_t,
                            HitRecord &rec) const {
-  HitRecord temp_record;
-  bool hit_anything = false;
-  float closest_so_far = t_max;
+  HitRecord record;
+  bool hitAnything = false;
+  float closest = ray_t.max;
 
-  for (int i = 0; i < count; i++) {
-    bool got_hit = objects[i]->hit(ray, t_min, t_max, temp_record);
+  // Brute force
+  // for (int i = 0; i < count; i++) {
+  //   bool got_hit = objects[i]->hit(ray, t_min, t_max, record);
 
-    if (got_hit && temp_record.t < closest_so_far) {
-      hit_anything = true;
-      closest_so_far = temp_record.t;
-      rec = temp_record;
-    }
+  //   if (got_hit && record.t < closest) {
+  //     hitAnything = true;
+  //     closest = record.t;
+  //     rec = record;
+  //   }
+  // }
+
+  // BVH
+  bool gotHit = bvh->hit(ray, Interval(ray_t.min, closest), record);
+
+  if (gotHit && record.t < closest) {
+    hitAnything = true;
+    closest = record.t;
+    rec = record;
   }
 
-  return hit_anything;
+  return hitAnything;
 }
 
 __device__ void Scene::computeBoundingBox() {
   boundingBox = AABB();
 
   for (int i = 0; i < count; i++) {
-    objects[i]->computeBoundingBox();
-    boundingBox = AABB(boundingBox, objects[i]->boundingBox);
+    (*(objects + i))->computeBoundingBox();
+    boundingBox = AABB(boundingBox, (*(objects + i))->boundingBox);
   }
 }
