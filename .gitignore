@@ -3,6 +3,11 @@
 /build/
 /bin/
 
+# CUDA Nsight
+
+/profiles/
+Raydiance.ncu-proj
+
 ## CMake
 
 CMakeCache.txt
